@@ -1,33 +1,56 @@
 import { Document, Model, model, Types, Schema, Query } from "mongoose";
+import {
+  createRxDatabase,
+  RxDatabase,
+  RxCollection,
+  RxJsonSchema,
+  RxDocument,
+} from "rxdb";
 
 /**
  * Interface to model the User Schema for TypeScript.
  */
-export interface IUser extends Document {
-  _id:number,
-  id:number,
-  screenName:string,
-  profileUrl:string,
-  gender:string,
-  followersCount: number,
-  followCount: number,
-  profileImageUrl: string, // the smaller profile image
-  avatarHd: string, // a larger profile image,
-}
+export type IUser = {
+  _id: string;
+  id: number;
+  screenName: string;
+  profileUrl: string;
+  gender: string;
+  followersCount: number;
+  followCount: number;
+  profileImageUrl: string; // the smaller profile image
+  avatarHd: string; // a larger profile image,
+};
 
-export const userSchema = new Schema({
-  _id:{ type: Number, unique: true, required: true },
-  id: { type: Number, unique: true, required: true },
-  screenName: {type:String,unique:true,required:true}, // the name shown on weibo
-  profileUrl: String, // the url to the user's profile page
-  description: String,
-  gender: String,
-  followersCount: Number,
-  followCount: Number,
-  profileImageUrl: String, // the smaller profile image
-  avatarHd: String, // a larger profile image,
-});
+const userSchema:RxJsonSchema<IUser> = {
+  title: "userSchema",
+  version: 0,
+  description: "user schema",
+  type: "object",
+  properties: {
+    _id: { type: "string", "primary": true },
+    id: { type: "number" },
+    screenName: { type: 'string' }, // the name shown on weibo
+    profileUrl: { type: "string" }, // the url to the user's profile page
+    gender: { type: "string" },
+    followersCount: { type: "number" },
+    followCount: { type: "number" },
+    profileImageUrl: { type: "string" }, // the smaller profile image
+    avatarHd: { type: "string" }, // a larger profile image,
+  },
+  required: [
+    "screenName",
+    "_id",
+    "id",
+    "profileUrl",
+    "gender",
+    "followersCount",
+    "followCount",
+    "profileImageUrl",
+    "avatarHd",
+  ],
+};
 
-const User: Model<IUser> = model("User", userSchema);
+type UserDocument = RxDocument<IUser>;
 
-export default User;
+export default UserDocument;
