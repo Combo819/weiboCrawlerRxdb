@@ -10,7 +10,7 @@ import {
 /**
  * Interface to model the User Schema for TypeScript.
  */
-export type IUser = {
+ type IUser = {
   _id: string;
   id: number;
   screenName: string;
@@ -22,7 +22,7 @@ export type IUser = {
   avatarHd: string; // a larger profile image,
 };
 
-const userSchema:RxJsonSchema<IUser> = {
+export const userSchema:RxJsonSchema<IUser> = {
   title: "userSchema",
   version: 0,
   description: "user schema",

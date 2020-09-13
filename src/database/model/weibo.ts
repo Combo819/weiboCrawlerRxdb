@@ -1,8 +1,12 @@
-import { Document, Model, model, Types, Schema, Query } from "mongoose";
-import { IUser } from "./user";
-import { IComment } from "./comment";
-export interface IWeibo extends Document {
-  _id:string,
+import {
+  createRxDatabase,
+  RxDatabase,
+  RxCollection,
+  RxJsonSchema,
+  RxDocument,
+} from "rxdb";
+type IWeibo = {
+  _id: string;
   id: string;
   mid: string;
   createdAt: string;
@@ -13,30 +17,50 @@ export interface IWeibo extends Document {
   isLongText: boolean;
   commentsCount: number;
   attitudesCount: number;
-  user: IUser["_id"];
-  comments: Types.Array<IComment['_id']>;
-  pics?:any[];
-  pageInfo?:any;
-}
+  user: string;
+  comments: string[];
+  pics?: any[];
+  pageInfo?: any;
+};
 
-const weiboSchema = new Schema({
-  _id:{ type: String, unique: true, required: true },
-  id: { type: String, unique: true, required: true },
-  mid: String,
-  createdAt: String,
-  text: String,
-  textLength: Number,
-  picIds: [String],
-  repostsCount: String,
-  isLongText: Boolean,
-  commentsCount: Number,
-  attitudesCount: Number,
-  user: { type: Number, ref: "User" },
-  comments: [{ type: String, ref: "Comment" }],
-  pics:[{type:Object}],
-  pageInfo:{type:Object},
-});
+export const weiboSchema: RxJsonSchema<IWeibo> = {
+  title: "weibo schema",
+  version: 0,
+  description: "user schema",
+  type: "object",
+  properties: {
+    _id: { type: "string", primary: true },
+    id: { type: "number" },
+    mid: { type: "string" },
+    createdAt: { type: "string" },
+    text: { type: "string" },
+    textLength: { type: "number" },
+    picIds: { type: "array", items: { type: "string" } },
+    repostsCount: { type: "string" },
+    isLongText: { type: "boolean" },
+    commentsCount: { type: "number" },
+    attitudesCount: { type: "number" },
+    user: { type: "string" },
+    comments: { type: "array", items: { type: "string" } },
+    pics: { type: "array" },
+    pageInfo: { type: "object" },
+  },
+  required: [
+    "_id",
+    "id",
+    "mid",
+    "createdAt",
+    "text",
+    "textLength",
+    "picIds",
+    "repostsCount",
+    "isLongText",
+    "commentsCount",
+    "attitudesCount",
+    "user",
+    "comments",
+  ],
+};
+type WeiboDocument = RxDocument<IWeibo>;
 
-const Weibo: Model<IWeibo> = model("Weibo", weiboSchema);
-
-export default Weibo
+export default WeiboDocument;
