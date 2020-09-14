@@ -11,7 +11,7 @@ import {
   RxDocument,
 } from "rxdb";
 
-type IComment = {
+export type IComment = {
   _id: string;
   id: string;
   mid: string; // id for comment

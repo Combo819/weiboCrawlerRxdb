@@ -1,4 +1,5 @@
-import { UserModel } from "../../database";
+import {IUser,UserDocument} from '../../database/collections';
+import {database} from '../../database/connect'
 import downloadImage from '../downloader/image';
 import {staticPath} from '../../config'
 /**
@@ -6,7 +7,7 @@ import {staticPath} from '../../config'
  * @param user the user object from weibo or comment for subcomment
  */
 export function saveUser(user: any) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const {
       id,
       screenName,
@@ -17,7 +18,7 @@ export function saveUser(user: any) {
       profileImageUrl,
       avatarHd,
     } = user;
-    const userDoc = new UserModel({
+    const newUser:IUser = {
       _id: id,
       id,
       screenName,
@@ -27,15 +28,16 @@ export function saveUser(user: any) {
       followCount,
       profileImageUrl,
       avatarHd,
-    });
-
-    userDoc.save(function (err) {
+    }
+    if(!database){
+      return reject('database is not created')
+    }
+    try{
+      const userDoc:UserDocument = await database.user.insert(newUser);
       downloadImage(avatarHd,staticPath);
-      if (err&&err.code!==11000) {
-        reject(err);
-      }
       resolve(userDoc);
-      // saved!
-    });
+    }catch(err){
+      reject('failed to insert user '+screenName)
+    }
   });
 }

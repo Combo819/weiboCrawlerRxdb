@@ -1,10 +1,10 @@
-import CommentCollection, { commentSchema, CommentDocument } from "./comment";
+import CommentCollection, { commentSchema, CommentDocument,IComment } from "./comment";
 import SubCommentCollection, {
   subCommentSchema,
   SubCommentDocument,
 } from "./subComment";
-import UserCollection, { UserDocument, userSchema } from "./user";
-import WeiboCollection, { WeiboDocument, weiboSchema } from "./weibo";
+import UserCollection, { UserDocument, userSchema,IUser } from "./user";
+import WeiboCollection, { WeiboDocument, weiboSchema,IWeibo } from "./weibo";
 
 export {
   CommentDocument,
@@ -18,5 +18,5 @@ export {
   CommentCollection,
   SubCommentCollection,
   UserCollection,
-  WeiboCollection,
+  WeiboCollection,IWeibo,IUser,IComment
 };

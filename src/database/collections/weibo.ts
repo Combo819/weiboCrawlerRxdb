@@ -5,7 +5,7 @@ import {
   RxJsonSchema,
   RxDocument,
 } from "rxdb";
-type IWeibo = {
+export type IWeibo = {
   _id: string;
   id: string;
   mid: string;
@@ -61,6 +61,9 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
     "comments",
   ],
 };
+
+
+
 export type WeiboDocument = RxDocument<IWeibo>;
 
 type WeiboCollection = RxCollection<IWeibo>;

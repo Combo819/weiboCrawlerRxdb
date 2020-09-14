@@ -8,7 +8,7 @@ import {
   ISubComment,
   IUser,
   IWeibo,
-} from "./model";
+} from "./collections";
 
 export {
   connectDB,

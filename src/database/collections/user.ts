@@ -9,7 +9,7 @@ import {
 /**
  * Interface to model the User Schema for TypeScript.
  */
- type IUser = {
+ export type IUser = {
   _id: string;
   id: number;
   screenName: string;
