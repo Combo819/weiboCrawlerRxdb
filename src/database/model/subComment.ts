@@ -24,7 +24,7 @@ type ISubComment = {
   createdAt:string
 };
 
-const subCommentSchema: RxJsonSchema<ISubComment> = {
+export const subCommentSchema: RxJsonSchema<ISubComment> = {
   title: "userSchema",
   version: 0,
   description: "user schema",
@@ -58,9 +58,10 @@ const subCommentSchema: RxJsonSchema<ISubComment> = {
     "user",
   ],
 };;
-type SubCommentDocument = RxDocument<ISubComment>;
+export type SubCommentDocument = RxDocument<ISubComment>;
+
+type SubCommentCollection = RxCollection<ISubComment>;
 
 
 
-
-export default SubCommentDocument;
+export default SubCommentCollection;

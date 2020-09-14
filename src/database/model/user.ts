@@ -50,6 +50,7 @@ export const userSchema:RxJsonSchema<IUser> = {
   ],
 };
 
-type UserDocument = RxDocument<IUser>;
+export type UserDocument = RxDocument<IUser>;
+type UserCollection = RxCollection<IUser>;
 
-export default UserDocument;
+export default UserCollection;

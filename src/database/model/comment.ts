@@ -70,6 +70,8 @@ export const commentSchema: RxJsonSchema<IComment> = {
   ],
 };
 
-type CommentDocument = RxDocument<IComment>;
+export type CommentDocument = RxDocument<IComment>;
 
-export default CommentDocument;
+type CommentCollection = RxCollection<IComment>;
+
+export default CommentCollection;

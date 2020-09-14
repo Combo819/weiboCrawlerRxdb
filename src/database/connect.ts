@@ -1,7 +1,13 @@
 
 import { ConnectionOptions, connect } from "mongoose";
 import {URI} from '../config'
-
+import {
+  createRxDatabase,
+  RxDatabase,
+  RxCollection,
+  RxJsonSchema,
+  RxDocument,
+} from 'rxdb';
 
 const connectDB = async () => {
   try {

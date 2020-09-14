@@ -61,6 +61,8 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
     "comments",
   ],
 };
-type WeiboDocument = RxDocument<IWeibo>;
+export type WeiboDocument = RxDocument<IWeibo>;
 
-export default WeiboDocument;
+type WeiboCollection = RxCollection<IWeibo>;
+
+export default WeiboCollection;
