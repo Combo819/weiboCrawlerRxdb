@@ -26,7 +26,7 @@ type IWeibo = {
 export const weiboSchema: RxJsonSchema<IWeibo> = {
   title: "weibo schema",
   version: 0,
-  description: "user schema",
+  description: "weibo schema",
   type: "object",
   properties: {
     _id: { type: "string", primary: true },
@@ -40,8 +40,8 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
     isLongText: { type: "boolean" },
     commentsCount: { type: "number" },
     attitudesCount: { type: "number" },
-    user: { type: "string" },
-    comments: { type: "array", items: { type: "string" } },
+    user: { type: "string", ref: "user" },
+    comments: { type: "array", ref: "comment", items: { type: "string" } },
     pics: { type: "array" },
     pageInfo: { type: "object" },
   },

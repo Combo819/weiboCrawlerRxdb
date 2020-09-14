@@ -1,4 +1,3 @@
-import { Document, Model, model, Types, Schema, Query } from "mongoose";
 import {
   createRxDatabase,
   RxDatabase,
