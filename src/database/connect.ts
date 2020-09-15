@@ -45,7 +45,7 @@ const connectDB = async () => {
     await database.collection({
       name: "weibo",
       schema: weiboSchema,
-      methods:weiboCollectionMethods
+      statics:weiboCollectionMethods
     });
     await database.collection({
       name: "user",

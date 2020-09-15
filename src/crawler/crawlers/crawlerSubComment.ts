@@ -1,7 +1,12 @@
 import { getSubCommentApi } from "../../request";
 import { q } from "../queue";
-import { IComment,  CommentDocument, ISubComment, SubCommentDocument } from "../../database/collections";
-import {database} from '../../database/connect'
+import {
+  IComment,
+  CommentDocument,
+  ISubComment,
+  SubCommentDocument,
+} from "../../database/collections";
+import { database } from "../../database/connect";
 import camelcaseKeys from "camelcase-keys";
 import { map } from "async";
 import { saveUser } from "./saveUser";
@@ -24,16 +29,22 @@ export default function crawlerSubComments(commentDoc: CommentDocument): void {
     commentDoc,
     cid: commentDoc.id,
   };
-  console.log(q.length(),'q.length',q.running(),'q.running','in first crawler sub comment')
+  console.log(
+    q.length(),
+    "q.length",
+    q.running(),
+    "q.running",
+    "in first crawler sub comment"
+  );
   q.push([{ func, params: firstSubCommentParams }]);
 }
 
 /**
  * the iteratee for async map function to iterate all sub comments in this batch and save them
- * @param item sub comment item 
- * @param callback 
+ * @param item sub comment item
+ * @param callback
  */
-const iteratee = (item:any,callback:any)=>{
+const iteratee = (item: any, callback: any) => {
   const {
     id,
     mid,
@@ -47,7 +58,7 @@ const iteratee = (item:any,callback:any)=>{
     likeCount,
     createdAt,
   } = item;
-  const newSubComment:ISubComment = {
+  const newSubComment: ISubComment = {
     _id: id,
     id,
     mid,
@@ -59,19 +70,22 @@ const iteratee = (item:any,callback:any)=>{
     totalNumber,
     user: user.id,
     likeCount,
-    createdAt
-  }
-  if(!database){
+    createdAt,
+  };
+  if (!database) {
     return;
   }
-   database.subcomment.insert(newSubComment).then((res:SubCommentDocument)=>{
-    const subCommentDoc: SubCommentDocument = res;
-    saveUser(user);
-    callback();
-  }).catch(err=>{
-    callback();
-  });
-}
+  database.subcomment
+    .atomicUpsert(newSubComment)
+    .then((res: SubCommentDocument) => {
+      const subCommentDoc: SubCommentDocument = res;
+      saveUser(user);
+      callback();
+    })
+    .catch((err) => {
+      callback();
+    });
+};
 
 /**
  * the function that will be executed in queue worker that fetches the sub comments
@@ -90,11 +104,19 @@ function func(params: SubCommentParams): Promise<any> {
           resolve();
           return;
         }
-        await map(data,iteratee);
+        await map(data, iteratee);
         const newSubComments: string[] = data.map((item: any) => item.id);
-        commentDoc.update({$addToSet:{comments:newSubComments}});
+        commentDoc.update({
+          $addToSet: { subComments: { $each: newSubComments } },
+        });
         if (Number(maxId) !== 0) {
-          console.log(q.length(),'q.length',q.running(),'q.running','in 2 or more crawler sub comment')
+          console.log(
+            q.length(),
+            "q.length",
+            q.running(),
+            "q.running",
+            "in 2 or more crawler sub comment"
+          );
           q.push([{ func, params: { commentDoc, cid, maxId, maxIdType } }]);
         }
         resolve();

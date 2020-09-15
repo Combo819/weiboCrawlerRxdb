@@ -1,13 +1,19 @@
 import { getCommentApi } from "../../request";
 import { q } from "../queue";
-import { WeiboDocument, IComment, IWeibo, CommentDocument } from "../../database/collections";
-import {database} from '../../database/connect'
+import {
+  WeiboDocument,
+  IComment,
+  IWeibo,
+  CommentDocument,
+} from "../../database/collections";
+import { database } from "../../database/connect";
 import camelcaseKeys from "camelcase-keys";
 import crawlerSubComments from "./crawlerSubComment";
 import { saveUser } from "./saveUser";
 import { map } from "async";
 import downloadImage from "../downloader/image";
 import { staticPath } from "../../config";
+import { stringify } from "querystring";
 
 /**
  * the params that the func needs in async queue worker
@@ -65,39 +71,42 @@ const iteratee = (item: any, callback: any): void => {
     pic,
     weiboId,
   } = item;
-  console.log(weiboId, "weiboId");
-  const newComment:IComment = {
+
+  const newComment: IComment = {
     _id: id,
-    id,
+    id: String(id),
     mid,
     rootid,
     rootidstr,
     floorNumber,
     text,
-    maxId,
+    maxId: String(maxId),
     totalNumber,
-    user: user.id,
+    user: String(user.id),
     likeCount,
     createdAt,
     subComments: [],
     pic,
     weiboId,
-  }
-  if(!database){
+  };
+  if (!database) {
     return;
   }
-   database.comment.insert(newComment).then(res=>{
-    const commentDoc: CommentDocument = res;
-    if (pic) {
-      downloadImage(pic.large.url, staticPath);
-    }
-    saveUser(user);
-    crawlerSubComments(commentDoc);
-    callback();
-  }).catch(err=>{
-    console.log(err);
-  });
-
+  console.log(newComment, "newComment");
+  database.comment
+    .atomicUpsert(newComment)
+    .then((res) => {
+      const commentDoc: CommentDocument = res;
+      if (pic) {
+        downloadImage(pic.large.url, staticPath);
+      }
+      saveUser(user);
+      crawlerSubComments(commentDoc);
+      callback();
+    })
+    .catch((err) => {
+      console.log(err,'error in crawlerComments 108');
+    });
 };
 
 /**
@@ -124,7 +133,7 @@ const func = (params: commentParams): Promise<any> => {
         const newComments: string[] = data.map((item: any) => item.id);
         weiboDoc.update({
           $addToSet: {
-            comments: newComments,
+            comments: { $each: newComments },
           },
         });
         if (Number(maxId) !== 0) {

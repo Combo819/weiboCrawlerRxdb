@@ -36,7 +36,7 @@ export const commentSchema: RxJsonSchema<IComment> = {
   type: "object",
   properties: {
     _id: { type: "string", primary: true },
-    id: { type: "number" },
+    id: { type: "string" },
     mid: { type: "string" },
     rootid: { type: "string" },
     rootidstr: { type: "string" },
@@ -66,7 +66,6 @@ export const commentSchema: RxJsonSchema<IComment> = {
     "weiboId",
     "user",
     "subComments",
-    "pic",
   ],
 };
 

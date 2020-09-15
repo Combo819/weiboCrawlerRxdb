@@ -51,13 +51,19 @@ function startServer(): void {
       .skip(parseInt(pageSize) * parseInt(page))
       .exec()
       .then(async (weiboDocs: WeiboDocument[]) => {
-        weiboDocs = await PromiseBl.map(weiboDocs, async (item) => {
-          const commentsPopulated = await item.populate("comments");
-          item.comments = commentsPopulated;
-          return item;
-        });
+        const weibosPopulated: any = await PromiseBl.map(
+          weiboDocs,
+          async (item) => {
+            const userPopulated = await item.populate("user");
+
+            return {
+              ...item._data,
+              user:userPopulated._data
+            };
+          }
+        );
         const totalNumber = await weiboCollection.countAllDocuments();
-        response.send({ weibo: weiboDocs, totalNumber });
+        response.send({ weibo: weibosPopulated, totalNumber });
       });
   });
 
@@ -75,6 +81,7 @@ function startServer(): void {
       .exec();
     if (weiboDoc) {
       const user = await weiboDoc.populate("user");
+      console.log(user ,'user ')
       const comments: CommentDocument[] = await weiboDoc.populate("comments");
       const userDoc: UserDocument = user;
       const filteredComments: CommentDocument[] = _.chain(comments)
@@ -86,9 +93,9 @@ function startServer(): void {
         comments: CommentDocument[];
       };
       const populatedWeiboDoc: PopulatedWeiboDoc = {
-        ...weiboDoc,
-        user: userDoc,
-        comments: filteredComments,
+        ...weiboDoc._data,
+        user: userDoc._data,
+        comments: filteredComments.map((item) => item._data),
       };
       response.send({ weibo: populatedWeiboDoc, totalNumber: comments.length });
     } else {
@@ -117,7 +124,7 @@ function startServer(): void {
         .take(parseInt(pageSize))
         .value();
       response.send({
-        comments: filteredComments,
+        comments: filteredComments.map((item) => item._data),
         totalNumber: comments.length,
       });
     } else {
@@ -134,26 +141,49 @@ function startServer(): void {
       return;
     }
     const commentCollection: CommentCollection = database.comment;
-    const commentDoc: CommentDocument|null = await commentCollection.findOne(commentId).exec();
-    if(commentDoc){
-      const user:UserDocument = await commentDoc.populate('user');
-      const subComments:SubCommentDocument[] = await commentDoc.populate('subComments');
-      const filteredSubComments:SubCommentDocument[] = _.chain(subComments).drop(parseInt(page) * parseInt(pageSize)).take(parseInt(pageSize)).value();
-      type SubCommentWithUser = Omit<Omit<SubCommentDocument,'user'>,'rootid'> &{
-        user:UserDocument,
-        rootid:CommentDocument
-      }
-      const filteredSubCommentsUser:SubCommentWithUser[] = await  PromiseBl.map(filteredSubComments,async (item)=>{
-        const user = await item.populate('user');
-        const rootid = await item.populate('rootid');
-        const newSubComment:SubCommentWithUser = {...item,user,rootid};
-        return newSubComment;
+    const commentDoc: CommentDocument | null = await commentCollection
+      .findOne(commentId)
+      .exec();
+    if (commentDoc) {
+      const user: UserDocument = await commentDoc.populate("user");
+      const subComments: SubCommentDocument[] = await commentDoc.populate(
+        "subComments"
+      );
+      const filteredSubComments: SubCommentDocument[] = _.chain(subComments)
+        .drop(parseInt(page) * parseInt(pageSize))
+        .take(parseInt(pageSize))
+        .value();
+      type SubCommentWithUser = Omit<
+        Omit<SubCommentDocument, "user">,
+        "rootid"
+      > & {
+        user: UserDocument;
+        rootid: CommentDocument;
+      };
+      const filteredSubCommentsUser: SubCommentWithUser[] = await PromiseBl.map(
+        filteredSubComments,
+        async (item) => {
+          const user = await item.populate("user");
+          const rootid = await item.populate("rootid");
+          const newSubComment: SubCommentWithUser = { ...item, user, rootid };
+          return newSubComment;
+        }
+      );
+      type CommentPopulated = Omit<
+        Omit<CommentDocument, "subComments">,
+        "user"
+      > & { subComments: SubCommentWithUser[]; user: UserDocument };
+      const commentDocPopulated: CommentPopulated = {
+        ...commentDoc._data,
+        user: user._data,
+        subComments: filteredSubCommentsUser.map((item) => item._data),
+      };
+      response.send({
+        comment: commentDocPopulated,
+        totalNumber: subComments.length,
       });
-      type CommentPopulated = Omit<Omit<CommentDocument,'subComments'>,'user'> &{subComments:SubCommentWithUser[],user:UserDocument};
-      const commentDocPopulated:CommentPopulated = {...commentDoc,user,subComments:filteredSubCommentsUser};
-      response.send({comment:commentDocPopulated,totalNumber:subComments.length});
-    }else{
-      response.send({comment:null,totalNumber:0})
+    } else {
+      response.send({ comment: null, totalNumber: 0 });
     }
   });
 

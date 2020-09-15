@@ -13,7 +13,7 @@ export type IWeibo = {
   text: string;
   textLength: number;
   picIds: Array<string>;
-  repostsCount: string;
+  repostsCount: number;
   isLongText: boolean;
   commentsCount: number;
   attitudesCount: number;
@@ -30,13 +30,13 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
   type: "object",
   properties: {
     _id: { type: "string", primary: true },
-    id: { type: "number" },
+    id: { type: "string" },
     mid: { type: "string" },
     createdAt: { type: "string" },
     text: { type: "string" },
     textLength: { type: "number" },
     picIds: { type: "array", items: { type: "string" } },
-    repostsCount: { type: "string" },
+    repostsCount: { type: "number" },
     isLongText: { type: "boolean" },
     commentsCount: { type: "number" },
     attitudesCount: { type: "number" },

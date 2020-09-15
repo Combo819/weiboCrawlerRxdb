@@ -11,7 +11,7 @@ import {
  */
  export type IUser = {
   _id: string;
-  id: number;
+  id: string;
   screenName: string;
   profileUrl: string;
   gender: string;
@@ -28,7 +28,7 @@ export const userSchema:RxJsonSchema<IUser> = {
   type: "object",
   properties: {
     _id: { type: "string", "primary": true },
-    id: { type: "number" },
+    id: { type: "string" },
     screenName: { type: 'string' }, // the name shown on weibo
     profileUrl: { type: "string" }, // the url to the user's profile page
     gender: { type: "string" },

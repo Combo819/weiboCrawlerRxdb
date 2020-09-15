@@ -53,6 +53,6 @@ if (!token) {
   throw new Error(`The token doesn't exist. Add a token to the src/credential`);
 }
 
-const port = 5000;
+const port = 5001;
 
 export { token, URI, baseUrl, Q_CONCURRENCY, WEIBO_ID, staticPath,port };

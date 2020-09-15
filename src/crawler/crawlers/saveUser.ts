@@ -19,8 +19,8 @@ export function saveUser(user: any) {
       avatarHd,
     } = user;
     const newUser:IUser = {
-      _id: id,
-      id,
+      _id: String(id) ,
+      id:String(id),
       screenName,
       profileUrl,
       gender,
@@ -33,10 +33,17 @@ export function saveUser(user: any) {
       return reject('database is not created')
     }
     try{
-      const userDoc:UserDocument = await database.user.insert(newUser);
+      database.user.atomicUpsert(newUser).then(res=>{
+        console.log(res)
+      }).catch(err=>{
+        console.log(err)
+      })
+      const userDoc:UserDocument = await database.user.atomicUpsert(newUser);
+      
       downloadImage(avatarHd,staticPath);
       resolve(userDoc);
     }catch(err){
+      console.log(err)
       reject('failed to insert user '+screenName)
     }
   });

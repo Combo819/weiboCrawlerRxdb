@@ -13,6 +13,7 @@ import downloadVideo from "../downloader/video";
 import { staticPath } from "../../config";
 import { q } from "../queue";
 import { retry } from "async";
+import { stringify } from "querystring";
 
 async function crawlerWeibo(weiboId: string): Promise<WeiboDocument|null> {
   let weiboDoc: WeiboDocument | null;
@@ -29,7 +30,9 @@ async function crawlerWeibo(weiboId: string): Promise<WeiboDocument|null> {
     }
     const renderData = Function(renderText + " return $render_data")();
     const status = camelcaseKeys(renderData.status, { deep: true });
+   
     const resDoc: WeiboDocument | null = await saveWeibo(status);
+    
     saveUser(status.user);
     weiboDoc = resDoc;
     return weiboDoc
@@ -85,13 +88,14 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       isLongText,
       commentsCount,
       attitudesCount,
-      user: userId,
+      user: String(userId) ,
       pics,
       comments: [],
       pageInfo,
     };
+    console.log(newWeibo);  
     try {
-      const weiboDoc: WeiboDocument = await database.weibo.insert(newWeibo);
+      const weiboDoc: WeiboDocument = await database.weibo.atomicUpsert(newWeibo);
       q.pause();
       if (pics && pics.length > 0) {
         pics.forEach((element: any) => {
@@ -108,6 +112,7 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       }
       resolve(weiboDoc);
     } catch (err) {
+      console.log(err);
       reject('failed to insert weibo'+id)
     }
   });
