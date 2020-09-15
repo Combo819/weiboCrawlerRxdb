@@ -1,12 +1,23 @@
 import { startCrawler } from "../crawler";
-import { WeiboModel, IWeibo, CommentModel, IComment, UserModel } from "../database";
+import {
+  WeiboCollection,
+  WeiboDocument,
+  UserDocument,
+  CommentDocument,
+  CommentCollection,
+  SubCommentDocument,
+} from "../database/collections";
 import { port } from "../config";
 import express from "express";
-import cors from 'cors';
+import cors from "cors";
+import { database } from "../database/connect";
+import { Promise as PromiseBl } from "bluebird";
+import _ from "lodash";
 
 function startServer(): void {
   interface ResponseBody {
     status: "success" | "error";
+    message?: any;
   }
   const app = express();
   app.use(express.urlencoded());
@@ -14,10 +25,10 @@ function startServer(): void {
   app.use(cors());
   app.post("/api/save", (request, response) => {
     const { weiboId }: { weiboId: string } = request.body;
-    console.log(weiboId,'weiboId')
+    console.log(weiboId, "weiboId");
     startCrawler(weiboId)
       .then((res) => {
-        const resBody: ResponseBody = { status: "success" };
+        const resBody: ResponseBody = { status: "success", message: res };
         response.send(resBody);
       })
       .catch((err) => {
@@ -29,89 +40,121 @@ function startServer(): void {
   app.get("/api/weibos", (request, response) => {
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
-    WeiboModel.find({})
+    if (!database) {
+      console.log("database is not created");
+      return;
+    }
+    const weiboCollection: WeiboCollection = database.weibo;
+    weiboCollection
+      .find()
       .limit(parseInt(pageSize))
       .skip(parseInt(pageSize) * parseInt(page))
-      .populate("user")
-      .populate({ path: "comments", limit: 3 })
-      .exec(async (err, res) => {
-        if (err) {
-          throw err;
-        }
-        const totalNumber = await WeiboModel.estimatedDocumentCount().exec();
-        response.send({ weibo: res, totalNumber });
+      .exec()
+      .then(async (weiboDocs: WeiboDocument[]) => {
+        weiboDocs = await PromiseBl.map(weiboDocs, async (item) => {
+          const commentsPopulated = await item.populate("comments");
+          item.comments = commentsPopulated;
+          return item;
+        });
+        const totalNumber = await weiboCollection.countAllDocuments();
+        response.send({ weibo: weiboDocs, totalNumber });
       });
   });
 
-  app.get("/api/weibo/:weiboId", (request, response) => {
+  app.get("/api/weibo/:weiboId", async (request, response) => {
     const { weiboId } = request.params;
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
-    WeiboModel.findById(weiboId)
-      .populate({ path: "user" })
-      .populate({
-        path: "comments",
-        limit: parseInt(pageSize),
-        skip: parseInt(page) * parseInt(pageSize),
-        populate: { path: "user",model:UserModel },
-      })
-      .exec(async (err, res) => {
-        if (err) {
-          throw err;
-        }
-        const weibo: IWeibo | null = await WeiboModel.findById(weiboId).exec();
-        response.send({ weibo: res, totalNumber: weibo && weibo.comments.length });
-      });
+    if (!database) {
+      console.log("database is not created");
+      return;
+    }
+    const weiboCollection: WeiboCollection = database.weibo;
+    const weiboDoc: WeiboDocument | null = await weiboCollection
+      .findOne(weiboId)
+      .exec();
+    if (weiboDoc) {
+      const user = await weiboDoc.populate("user");
+      const comments: CommentDocument[] = await weiboDoc.populate("comments");
+      const userDoc: UserDocument = user;
+      const filteredComments: CommentDocument[] = _.chain(comments)
+        .drop(parseInt(page) * parseInt(pageSize))
+        .take(parseInt(pageSize))
+        .value();
+      type PopulatedWeiboDoc = Omit<Omit<WeiboDocument, "user">, "comments"> & {
+        user: UserDocument;
+        comments: CommentDocument[];
+      };
+      const populatedWeiboDoc: PopulatedWeiboDoc = {
+        ...weiboDoc,
+        user: userDoc,
+        comments: filteredComments,
+      };
+      response.send({ weibo: populatedWeiboDoc, totalNumber: comments.length });
+    } else {
+      response.send({ weibo: null, totalNumber: 0 });
+    }
   });
 
-
-
-  app.get("/api/comments/:weiboId", (request, response) => {
+  app.get("/api/comments/:weiboId", async (request, response) => {
     const { weiboId } = request.params;
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
-    WeiboModel.findById(weiboId)
-      .populate({ path: "user" })
-      .populate({
-        path: "comments",
-        sort:{likeCount:-1},
-        limit: parseInt(pageSize),
-        skip: parseInt(page) * parseInt(pageSize),
-        populate: { path: "user",model:UserModel },
-      })
-      .exec(async (err, res) => {
-        if (err) {
-          throw err;
-        }
-        const weibo: IWeibo | null = await WeiboModel.findById(weiboId).exec();
-        response.send({ comments: res&&res.comments, totalNumber: weibo && weibo.comments.length });
+    if (!database) {
+      console.log("database is not created");
+      return;
+    }
+    const weiboCollection: WeiboCollection = database.weibo;
+    const weiboDoc: WeiboDocument | null = await weiboCollection
+      .findOne(weiboId)
+      .exec();
+    if (weiboDoc) {
+      const user = await weiboDoc.populate("user");
+      const comments: CommentDocument[] = await weiboDoc.populate("comments");
+      const userDoc: UserDocument = user;
+      const filteredComments: CommentDocument[] = _.chain(comments)
+        .drop(parseInt(page) * parseInt(pageSize))
+        .take(parseInt(pageSize))
+        .value();
+      response.send({
+        comments: filteredComments,
+        totalNumber: comments.length,
       });
+    } else {
+      response.send({ weibo: null, totalNumber: 0 });
+    }
   });
 
-  app.get("/api/comment/:commentId", (request, response) => {
+  app.get("/api/comment/:commentId", async (request, response) => {
     const { commentId } = request.params;
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
-    CommentModel.findById(commentId)
-      .populate({ path: "user",model:UserModel })
-      .populate({
-        path: "subComments",
-        limit: parseInt(pageSize),
-        skip: parseInt(page) * parseInt(pageSize),
-        populate: [{ path: "user",model:UserModel },{path:'rootid',model:CommentModel}],
-      })
-      .exec(async (err, res) => {
-        if (err) {
-          throw err;
-        }
-        const comment: IComment | null = await CommentModel.findById(
-          commentId
-        ).exec();
-        response.send({
-          comment: res,
-          totalNumber: comment && comment.subComments.length,
-        });
+    if (!database) {
+      console.log("database is not created");
+      return;
+    }
+    const commentCollection: CommentCollection = database.comment;
+    const commentDoc: CommentDocument|null = await commentCollection.findOne(commentId).exec();
+    if(commentDoc){
+      const user:UserDocument = await commentDoc.populate('user');
+      const subComments:SubCommentDocument[] = await commentDoc.populate('subComments');
+      const filteredSubComments:SubCommentDocument[] = _.chain(subComments).drop(parseInt(page) * parseInt(pageSize)).take(parseInt(pageSize)).value();
+      type SubCommentWithUser = Omit<Omit<SubCommentDocument,'user'>,'rootid'> &{
+        user:UserDocument,
+        rootid:CommentDocument
+      }
+      const filteredSubCommentsUser:SubCommentWithUser[] = await  PromiseBl.map(filteredSubComments,async (item)=>{
+        const user = await item.populate('user');
+        const rootid = await item.populate('rootid');
+        const newSubComment:SubCommentWithUser = {...item,user,rootid};
+        return newSubComment;
       });
+      type CommentPopulated = Omit<Omit<CommentDocument,'subComments'>,'user'> &{subComments:SubCommentWithUser[],user:UserDocument};
+      const commentDocPopulated:CommentPopulated = {...commentDoc,user,subComments:filteredSubCommentsUser};
+      response.send({comment:commentDocPopulated,totalNumber:subComments.length});
+    }else{
+      response.send({comment:null,totalNumber:0})
+    }
   });
 
   app.listen(port || 5000, () => {

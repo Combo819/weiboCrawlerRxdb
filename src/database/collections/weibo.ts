@@ -62,10 +62,12 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
   ],
 };
 
-
+export type WeiboCollectionMethods = {
+  countAllDocuments: () => Promise<number>;
+}
 
 export type WeiboDocument = RxDocument<IWeibo>;
 
-type WeiboCollection = RxCollection<IWeibo>;
+type WeiboCollection = RxCollection<IWeibo,any,WeiboCollectionMethods>;
 
 export default WeiboCollection;

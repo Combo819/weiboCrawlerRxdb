@@ -1,10 +1,7 @@
 import { getSubCommentApi } from "../../request";
 import { q } from "../queue";
-import {
-  IComment,
-  ISubComment,
-  SubCommentModel,
-} from "../../database";
+import { IComment,  CommentDocument, ISubComment, SubCommentDocument } from "../../database/collections";
+import {database} from '../../database/connect'
 import camelcaseKeys from "camelcase-keys";
 import { map } from "async";
 import { saveUser } from "./saveUser";
@@ -12,7 +9,7 @@ import { saveUser } from "./saveUser";
  * the params that the func needs in async queue worker
  */
 interface SubCommentParams {
-  commentDoc: IComment;
+  commentDoc: CommentDocument;
   cid: string;
   maxId?: string | undefined;
   maxIdType?: number | undefined;
@@ -22,7 +19,7 @@ interface SubCommentParams {
  * starter function that pushes the first sub comment  request of the current comment to the worker of the queue
  * @param commentDoc the parent comment doc of this sub comment
  */
-export default function crawlerSubComments(commentDoc: IComment): void {
+export default function crawlerSubComments(commentDoc: CommentDocument): void {
   const firstSubCommentParams: SubCommentParams = {
     commentDoc,
     cid: commentDoc.id,
@@ -48,8 +45,9 @@ const iteratee = (item:any,callback:any)=>{
     totalNumber,
     user,
     likeCount,
+    createdAt,
   } = item;
-  const subCommentDoc: ISubComment = new SubCommentModel({
+  const newSubComment:ISubComment = {
     _id: id,
     id,
     mid,
@@ -61,12 +59,16 @@ const iteratee = (item:any,callback:any)=>{
     totalNumber,
     user: user.id,
     likeCount,
-  });
-  subCommentDoc.save((err, product) => {
-    if (err&&err.code!==11000) {
-      console.log(err, "err");
-    }
+    createdAt
+  }
+  if(!database){
+    return;
+  }
+   database.subcomment.insert(newSubComment).then((res:SubCommentDocument)=>{
+    const subCommentDoc: SubCommentDocument = res;
     saveUser(user);
+    callback();
+  }).catch(err=>{
     callback();
   });
 }
@@ -90,13 +92,7 @@ function func(params: SubCommentParams): Promise<any> {
         }
         await map(data,iteratee);
         const newSubComments: string[] = data.map((item: any) => item.id);
-        commentDoc.subComments.addToSet(...newSubComments);
-        commentDoc.isNew = false;
-        commentDoc.save((err, product) => {
-            if (err&&err.code!==11000) {
-              console.log(err,'error in saving commentDoc');
-            }
-          });
+        commentDoc.update({$addToSet:{comments:newSubComments}});
         if (Number(maxId) !== 0) {
           console.log(q.length(),'q.length',q.running(),'q.running','in 2 or more crawler sub comment')
           q.push([{ func, params: { commentDoc, cid, maxId, maxIdType } }]);

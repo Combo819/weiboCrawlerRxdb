@@ -1,6 +1,6 @@
+import { connectDB } from "./database";
+import startServer from "./server/server";
 
-import { connectDB, WeiboModel } from "./database";
-import startServer from './server/server'
-
-connectDB();
-startServer();
+connectDB().then((db) => {
+  startServer();
+});

@@ -9,7 +9,7 @@ import {
   RxDocument,
 } from "rxdb";
 
-type ISubComment = {
+export type ISubComment = {
   _id: string;
   id: string; //id for subComment
   mid: string; //id for subComment
