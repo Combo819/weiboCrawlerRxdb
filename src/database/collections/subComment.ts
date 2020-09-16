@@ -17,28 +17,24 @@ export type ISubComment = {
   rootidstr: string; //id for parent comment
   floorNumber: number;
   text: string; // unicode and html
-  maxId: string;
-  totalNumber: number; // the number of sub comments shown on client
   user: string;
   likeCount: number;
   createdAt:string
 };
 
 export const subCommentSchema: RxJsonSchema<ISubComment> = {
-  title: "userSchema",
+  title: "subcomment schema",
   version: 0,
-  description: "user schema",
+  description: "subcomment schema",
   type: "object",
   properties: {
     _id: { type: "string", primary: true },
-    id: { type: "number" },
+    id: { type: "string" },
     mid: { type: "string" },
     rootid: { type: "string",ref:'comment' },
     rootidstr: { type: "string" },
     floorNumber: { type: "number" },
     text: { type: "string" },
-    maxId: { type: "string" },
-    totalNumber: { type: "number" },
     likeCount: { type: "number" },
     createdAt: { type: "string" },
     user: { type: "string", ref: "user" },
@@ -51,8 +47,6 @@ export const subCommentSchema: RxJsonSchema<ISubComment> = {
     "rootidstr",
     "floorNumber",
     "text",
-    "maxId",
-    "totalNumber",
     "likeCount",
     "createdAt",
     "user",

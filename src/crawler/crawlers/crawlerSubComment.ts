@@ -27,7 +27,7 @@ interface SubCommentParams {
 export default function crawlerSubComments(commentDoc: CommentDocument): void {
   const firstSubCommentParams: SubCommentParams = {
     commentDoc,
-    cid: commentDoc.id,
+    cid: commentDoc.get('_id'),
   };
   console.log(
     q.length(),
@@ -45,6 +45,9 @@ export default function crawlerSubComments(commentDoc: CommentDocument): void {
  * @param callback
  */
 const iteratee = (item: any, callback: any) => {
+  if(typeof item==='number'){
+    throw new Error('item is a number')
+  }
   const {
     id,
     mid,
@@ -52,30 +55,27 @@ const iteratee = (item: any, callback: any) => {
     rootidstr,
     floorNumber,
     text,
-    maxId,
-    totalNumber,
     user,
     likeCount,
     createdAt,
   } = item;
+
   const newSubComment: ISubComment = {
-    _id: id,
-    id,
+    _id: String(id),
+    id:String(id),
     mid,
     rootid,
     rootidstr,
     floorNumber,
     text,
-    maxId,
-    totalNumber,
-    user: user.id,
+    user: String(user.id) ,
     likeCount,
     createdAt,
   };
   if (!database) {
     return;
   }
-  database.subcomment
+  database?.subcomment
     .atomicUpsert(newSubComment)
     .then((res: SubCommentDocument) => {
       const subCommentDoc: SubCommentDocument = res;
@@ -83,6 +83,7 @@ const iteratee = (item: any, callback: any) => {
       callback();
     })
     .catch((err) => {
+      console.log(err);
       callback();
     });
 };
@@ -96,7 +97,6 @@ function func(params: SubCommentParams): Promise<any> {
     const { cid, maxId, maxIdType, commentDoc } = params;
     getSubCommentApi(cid, maxId, maxIdType)
       .then(async (res) => {
-        //console.log(res, "res in crawler subComment");
         const { data, maxId, maxIdType } = camelcaseKeys(res.data, {
           deep: true,
         });
@@ -106,7 +106,8 @@ function func(params: SubCommentParams): Promise<any> {
         }
         await map(data, iteratee);
         const newSubComments: string[] = data.map((item: any) => item.id);
-        commentDoc.update({
+
+        await commentDoc.update({
           $addToSet: { subComments: { $each: newSubComments } },
         });
         if (Number(maxId) !== 0) {
@@ -122,6 +123,7 @@ function func(params: SubCommentParams): Promise<any> {
         resolve();
       })
       .catch((err) => {
+        console.log(err);
         reject(err);
       });
   });

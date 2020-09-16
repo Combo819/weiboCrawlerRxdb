@@ -34,7 +34,7 @@ export function saveUser(user: any) {
     }
     try{
       database.user.atomicUpsert(newUser).then(res=>{
-        console.log(res)
+       
       }).catch(err=>{
         console.log(err)
       })

@@ -48,7 +48,7 @@ export const commentSchema: RxJsonSchema<IComment> = {
     createdAt: { type: "string" },
     weiboId: { type: "string",ref:'weibo' },
     user: { type: "string" ,ref:'user'},
-    subComments: { type: "array",ref:'subcomment', items: { type: "string" } },
+    subComments: { type: "array", ref:'subcomment',items: { type: "string", } },
     pic: { type: "object" },
   },
   required: [

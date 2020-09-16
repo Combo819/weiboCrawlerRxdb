@@ -92,7 +92,6 @@ const iteratee = (item: any, callback: any): void => {
   if (!database) {
     return;
   }
-  console.log(newComment, "newComment");
   database.comment
     .atomicUpsert(newComment)
     .then((res) => {

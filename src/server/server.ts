@@ -58,7 +58,7 @@ function startServer(): void {
 
             return {
               ...item._data,
-              user:userPopulated._data
+              user: userPopulated._data,
             };
           }
         );
@@ -81,13 +81,19 @@ function startServer(): void {
       .exec();
     if (weiboDoc) {
       const user = await weiboDoc.populate("user");
-      console.log(user ,'user ')
       const comments: CommentDocument[] = await weiboDoc.populate("comments");
       const userDoc: UserDocument = user;
       const filteredComments: CommentDocument[] = _.chain(comments)
         .drop(parseInt(page) * parseInt(pageSize))
         .take(parseInt(pageSize))
         .value();
+      const filteredCommentsWithUser = await PromiseBl.map(
+        filteredComments,
+        async (item) => {
+          const userDoc: UserDocument = await item.populate("user");
+          return { ...item._data, user: userDoc._data };
+        }
+      );
       type PopulatedWeiboDoc = Omit<Omit<WeiboDocument, "user">, "comments"> & {
         user: UserDocument;
         comments: CommentDocument[];
@@ -95,7 +101,7 @@ function startServer(): void {
       const populatedWeiboDoc: PopulatedWeiboDoc = {
         ...weiboDoc._data,
         user: userDoc._data,
-        comments: filteredComments.map((item) => item._data),
+        comments: filteredCommentsWithUser,
       };
       response.send({ weibo: populatedWeiboDoc, totalNumber: comments.length });
     } else {
@@ -123,8 +129,15 @@ function startServer(): void {
         .drop(parseInt(page) * parseInt(pageSize))
         .take(parseInt(pageSize))
         .value();
+      const filteredCommentsWithUser = await PromiseBl.map(
+        filteredComments,
+        async (item) => {
+          const userDoc: UserDocument = await item.populate("user");
+          return { ...item._data, user: userDoc._data };
+        }
+      );
       response.send({
-        comments: filteredComments.map((item) => item._data),
+        comments: filteredCommentsWithUser,
         totalNumber: comments.length,
       });
     } else {
@@ -163,9 +176,9 @@ function startServer(): void {
       const filteredSubCommentsUser: SubCommentWithUser[] = await PromiseBl.map(
         filteredSubComments,
         async (item) => {
-          const user = await item.populate("user");
-          const rootid = await item.populate("rootid");
-          const newSubComment: SubCommentWithUser = { ...item, user, rootid };
+          const userDoc:UserDocument = await item.populate("user");
+          const commentDoc:CommentDocument = await item.populate("rootid");
+          const newSubComment: SubCommentWithUser = { ...item._data, user:userDoc._data, rootid:commentDoc._data };
           return newSubComment;
         }
       );
@@ -176,7 +189,7 @@ function startServer(): void {
       const commentDocPopulated: CommentPopulated = {
         ...commentDoc._data,
         user: user._data,
-        subComments: filteredSubCommentsUser.map((item) => item._data),
+        subComments: filteredSubCommentsUser,
       };
       response.send({
         comment: commentDocPopulated,

@@ -16,7 +16,7 @@ function getSubCommentApi(
   return crawlerAxios({
     url: "/comments/hotFlowChild",
     params: {
-      cid,
+      cid:cid,
       max_id: maxId||0,
       max_id_type: maxIdType || 0,
     },

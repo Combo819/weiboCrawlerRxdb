@@ -19,7 +19,7 @@ async function crawlerWeibo(weiboId: string): Promise<WeiboDocument|null> {
   let weiboDoc: WeiboDocument | null;
   try {
     const res = await getWeiboApi(weiboId);
-    //console.log(res);
+
     const $ = cheerio.load(res.data);
     let renderText: string;
     try {
@@ -92,24 +92,24 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       pics,
       comments: [],
       pageInfo,
-    };
-    console.log(newWeibo);  
+    }; 
     try {
-      const weiboDoc: WeiboDocument = await database.weibo.atomicUpsert(newWeibo);
+      
       q.pause();
       if (pics && pics.length > 0) {
         pics.forEach((element: any) => {
           downloadImage(element.large.url, staticPath);
         });
       }
-      if (pageInfo.urls) {
+      if (pageInfo&&pageInfo.urls) {
         const { mp4720PMp4, mp4HdMp4, mp4LdMp4 } = pageInfo.urls;
         const videoUrl = [mp4720PMp4, mp4HdMp4, mp4LdMp4].find(
           (ele) => typeof ele === "string"
         );
-        pageInfo.url = videoUrl;
+        newWeibo.pageInfo.url = videoUrl;
         downloadVideo(videoUrl, staticPath);
       }
+      const weiboDoc: WeiboDocument = await database.weibo.atomicUpsert(newWeibo);
       resolve(weiboDoc);
     } catch (err) {
       console.log(err);
