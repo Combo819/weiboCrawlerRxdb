@@ -33,4 +33,4 @@ const downloadAxios: AxiosInstance = axios.create({
 
 
 
-export { crawlerAxios,downloadAxios };
+export { crawlerAxios,downloadAxios,axios };

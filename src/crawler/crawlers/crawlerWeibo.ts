@@ -31,7 +31,7 @@ async function crawlerWeibo(weiboId: string): Promise<WeiboDocument|null> {
     const renderData = Function(renderText + " return $render_data")();
     const status = camelcaseKeys(renderData.status, { deep: true });
    
-    const resDoc: WeiboDocument | null = await saveWeibo(status);
+    const resDoc: WeiboDocument | null = await saveWeibo(status.retweetedStatus||status);
     
     saveUser(status.user);
     weiboDoc = resDoc;

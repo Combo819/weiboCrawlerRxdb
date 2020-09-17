@@ -15,6 +15,7 @@ interface ParsedConfigs {
   token: string;
   email?: string;
   password?: string;
+  users:string[];
 }
 
 const rawData: string = fs
@@ -53,6 +54,8 @@ if (!token) {
   throw new Error(`The token doesn't exist. Add a token to the src/credential`);
 }
 
+const listenerUsers = parsedConfigs.users;
+
 const port = 5001;
 
-export { token, URI, baseUrl, Q_CONCURRENCY, WEIBO_ID, staticPath,port };
+export { token, URI, baseUrl, Q_CONCURRENCY, WEIBO_ID, staticPath,port,listenerUsers };
