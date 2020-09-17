@@ -3,3 +3,4 @@ credential.json
 /static
 /build
 /weibocrawler-rxdb-*
+/credential*

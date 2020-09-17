@@ -1,18 +1,17 @@
 import { connectDB } from "./database";
 import startServer from "./server/server";
 import { Listener } from "./listener";
-import { listenerUsers } from "./config";
 import PromiseBL from "bluebird";
-import { getUserId } from "./request";
+import { getUserId,axios } from "./request";
 import { getTokenByPuppeteer } from "./browser";
-getTokenByPuppeteer()
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-false &&
+import {getCredentialFile} from './utility/userInterface'
+
+
+getCredentialFile().then(res=>{
+
+  const {cookie,users:listenerUsers} = res;
+  axios.defaults.headers.common['cookie'] = cookie; 
+ 
   connectDB().then(async (db) => {
     startServer();
     let userIds: string[] = [];
@@ -24,3 +23,9 @@ false &&
 
     const listener = new Listener(userIds || []);
   });
+
+}).catch(err=>{
+
+})
+
+

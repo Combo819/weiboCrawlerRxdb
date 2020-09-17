@@ -2,13 +2,14 @@ import puppeteer from "puppeteer-core";
 import { URL } from "url";
 import _ from "lodash";
 
-const getTokenByPuppeteer:()=>Promise<string> = () => {
-  return new Promise( async (resolve, reject) => {
-    try{
-      const browser:puppeteer.Browser = await puppeteer.launch({
+const getTokenByPuppeteer: (browserPath: string) => Promise<string> = (
+  browserPath: string
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const browser: puppeteer.Browser = await puppeteer.launch({
         product: "chrome",
-        executablePath:
-          "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+        executablePath: browserPath,
         headless: false,
       });
       const page = await browser.newPage();
@@ -23,14 +24,16 @@ const getTokenByPuppeteer:()=>Promise<string> = () => {
             cookiesStr += `${name}=${value}; `;
           });
           resolve(_.trim(cookiesStr));
-          await page.evaluate(' alert("token get. the browser will be closed") ');
+          await page.evaluate(
+            ' alert("token get. the browser will be closed") '
+          );
           await browser.close();
         }
       });
-    }catch(err){
+    } catch (err) {
+      console.log(err);
       reject(err);
     }
-
   });
 
   //await browser.close();

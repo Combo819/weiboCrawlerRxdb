@@ -12,6 +12,8 @@ interface ParsedConfigs {
 async function getCredentialFile() {
   if (!fs.existsSync(path.resolve(__dirname, "../../../", "credential.json"))) {
     const { cookie, users } = await createNewJson();
+
+    return { cookie, users };
   } else {
     const rawData: string = fs
       .readFileSync(path.resolve(__dirname, "../../../", "credential.json"))
@@ -20,22 +22,26 @@ async function getCredentialFile() {
       const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
       let { token: cookie, users } = parsedConfigs;
       if (!cookie) {
+        cookie = (await reviseCookie(users)).cookie;
       }
       if (!users || !users.length) {
+        users = (await reviseUsers(cookie)).users;
       }
+      return { cookie, users };
     } catch (err) {
       const { cookie, users } = await createNewJson();
+      return { cookie, users };
     }
   }
 }
 async function createNewJson() {
   if (
     readlineSync.keyInYN(
-      `can not find a credential.json file or the file is invalid to provide the weibo token and user list, do you want to create one? credential.json 不存在或无效,需要创建一个credential.json文件来提供微博cookie和监听者名单，确定创建吗？`
+      `can not find a credential.json file or the file is invalid to provide the weibo token and user list, do you want to create one? credential.json`
     )
   ) {
     const usersStr = readlineSync.question(
-      'please provide your weibo usernames, which you want to list the direct messages from, separete them by "," if they are more than 1. For example VanDarkHolme,BillyHerrington. \n 请提供你需要监听的微博账号，如果有多个请用英文逗号“,”分隔，比如 VanDarkHolme,BillyHerrington'
+      'please provide your weibo usernames that you want to listen the direct messages from, separete them by ",". For example VanDarkHolme,BillyHerrington. \n'
     );
     const users = _.chain(usersStr)
       .trim()
@@ -43,18 +49,22 @@ async function createNewJson() {
       .replace("，", ",")
       .value()
       .split(",");
+    console.log(users);
     const index = readlineSync.keyInSelect(
-      ["browser 通过浏览器", "copy and paste 复制粘贴"],
-      "How do you want to get the weibo token? 请问你希望如何获得微博cookie？"
+      ["browser", "copy and paste"],
+      "How do you want to get the weibo token? "
     );
 
-    if (index === 1) {
-      const cookie: string = await getTokenByPuppeteer();
+    if (index === 0) {
+      const chromePath = readlineSync.questionPath(
+        `please provide your chrome path: \n`
+      );
+      const cookie: string = await getTokenByPuppeteer(chromePath.replace(/\\/g, "\\\\"));
       saveJson(cookie, users);
       return { cookie, users };
-    } else if (index === 2) {
+    } else if (index === 1) {
       const cookie: string = readlineSync.question(
-        "please copy and paste your cookie here. ref: baidu.com. \n 请手动将微博的cookie复制到这里，参见：baidu.com"
+        "please copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md: \n"
       );
       if (!cookie.length) {
         console.log("program terminated. 程序结束运行。");
@@ -63,11 +73,11 @@ async function createNewJson() {
       saveJson(cookie, users);
       return { cookie, users };
     } else {
-      console.log("program terminated. 程序结束运行。");
+      console.log("program terminated.");
       process.exit(1);
     }
   } else {
-    console.log("program terminated. 程序结束运行。");
+    console.log("program terminated.");
     process.exit(1);
   }
 }
@@ -86,17 +96,22 @@ function saveJson(cookie: string, users: string[]) {
 
 async function reviseCookie(users: string[]) {
   const index = readlineSync.keyInSelect(
-    ["browser 通过浏览器", "copy and paste 复制粘贴"],
-    "How do you want to get the weibo token? 请问你希望如何获得微博cookie？"
+    ["browser", "copy and paste"],
+    "How do you want to get the weibo token?  "
   );
 
-  if (index === 1) {
-    const cookie: string = await getTokenByPuppeteer();
+  if (index === 0) {
+    const chromePath = readlineSync.questionPath(
+      `please provide your chrome path: \n`
+    );
+    const cookie: string = await getTokenByPuppeteer(
+      chromePath.replace(/\\/g, "\\\\")
+    );
     saveJson(cookie, users);
     return { cookie, users };
-  } else if (index === 2) {
+  } else if (index === 1) {
     const cookie: string = readlineSync.question(
-      "please copy and paste your cookie here. ref: baidu.com. \n 请手动将微博的cookie复制到这里，参见：baidu.com"
+      "please copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md \n  "
     );
     if (!cookie.length) {
       console.log("program terminated. 程序结束运行。");
@@ -109,3 +124,19 @@ async function reviseCookie(users: string[]) {
     process.exit(1);
   }
 }
+
+async function reviseUsers(cookie: string) {
+  const usersStr = readlineSync.question(
+    'please provide your weibo usernames, which you want to list the direct messages from, separete them by "," if they are more than 1. For example VanDarkHolme,BillyHerrington. \n  '
+  );
+  const users = _.chain(usersStr)
+    .trim()
+    .replace("@", "")
+    .replace("，", ",")
+    .value()
+    .split(",");
+  saveJson(cookie, users);
+  return { cookie, users };
+}
+
+export { getCredentialFile };

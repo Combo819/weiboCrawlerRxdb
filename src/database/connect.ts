@@ -8,7 +8,6 @@ import {
   commentSchema,
   subCommentSchema,WeiboCollectionMethods
 } from "./collections";
-import { URI } from "../config";
 import {
   createRxDatabase,
   RxDatabase,
