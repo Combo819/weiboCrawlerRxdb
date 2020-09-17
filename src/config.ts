@@ -11,10 +11,7 @@ interface BaseUrl {
 }
 
 interface ParsedConfigs {
-  URI: string;
   token: string;
-  email?: string;
-  password?: string;
   users:string[];
 }
 
@@ -23,14 +20,8 @@ const rawData: string = fs
   .toString("utf-8");
 
 const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
+ 
 
-const URI: string = parsedConfigs.URI; //mongoDB uri
-
-if (!URI) {
-  throw new Error(
-    'You should specify the MongoDB URI as "URI" in src/credential.json'
-  );
-}
 
 const baseUrl: string = "https://m.weibo.cn";
 
@@ -58,4 +49,4 @@ const listenerUsers = parsedConfigs.users;
 
 const port = 5001;
 
-export { token, URI, baseUrl, Q_CONCURRENCY, WEIBO_ID, staticPath,port,listenerUsers };
+export { token,   baseUrl, Q_CONCURRENCY, WEIBO_ID, staticPath,port,listenerUsers };

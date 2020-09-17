@@ -1,3 +1,3 @@
-import {testPuppeteer} from './browser';
+import {getTokenByPuppeteer} from './browser';
 
-export {testPuppeteer}
+export {getTokenByPuppeteer}
