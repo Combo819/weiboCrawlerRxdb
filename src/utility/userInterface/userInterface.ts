@@ -21,6 +21,7 @@ async function getCredentialFile() {
     try {
       const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
       let { token: cookie, users } = parsedConfigs;
+      console.log(parsedConfigs,'parsedConfigs')
       if (!cookie) {
         cookie = (await reviseCookie(users)).cookie;
       }
@@ -83,7 +84,7 @@ async function createNewJson() {
 }
 
 function saveJson(cookie: string, users: string[]) {
-  let data = JSON.stringify({ token: cookie, users: users.join(",") });
+  let data = JSON.stringify({ token: cookie, users: users });
   fs.writeFile(
     path.resolve(__dirname, "../../../", "credential.json"),
     data,

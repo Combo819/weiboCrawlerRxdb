@@ -13,16 +13,24 @@ import cors from "cors";
 import { database } from "../database/connect";
 import { Promise as PromiseBl } from "bluebird";
 import _ from "lodash";
+import path from "path";
+
 
 function startServer(): void {
   interface ResponseBody {
     status: "success" | "error";
     message?: any;
   }
+
+
   const app = express();
+  
   app.use(express.urlencoded());
   app.use(express.json());
   app.use(cors());
+  app.use('/static',express.static(path.resolve(__dirname,'../','web')));
+  app.use(express.static(path.resolve(__dirname,'../../','static')));
+  
   app.post("/api/save", (request, response) => {
     const { weiboId }: { weiboId: string } = request.body;
     console.log(weiboId, "weiboId");
@@ -46,7 +54,7 @@ function startServer(): void {
     }
     const weiboCollection: WeiboCollection = database.weibo;
     weiboCollection
-      .find()
+      .find().sort('saveTime')
       .limit(parseInt(pageSize))
       .skip(parseInt(pageSize) * parseInt(page))
       .exec()
@@ -199,7 +207,9 @@ function startServer(): void {
       response.send({ comment: null, totalNumber: 0 });
     }
   });
-
+  app.get('/',(req, res)=> {
+    res.sendFile(path.resolve(__dirname,'../','web','index.html'));
+  })
   app.listen(port || 5000, () => {
     console.log(`listening on port ${port || 5000}`);
   });

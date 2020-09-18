@@ -92,6 +92,7 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       pics,
       comments: [],
       pageInfo,
+      saveTime:Date.now(),
     }; 
     try {
       
