@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "start:dev": "nodemon",
-    "build": "rimraf ./build && tsc"
+    "build": "rimraf ./build && tsc && cp -r ./src/web ./build/web",
+    "pkg": "pkg . --out-path=dist/ -t node12-win-x64"
   },
   "keywords": [],
   "author": "",
@@ -49,7 +50,20 @@
     "@types/uuid": "^8.3.0",
     "nodemon": "^2.0.4",
     "rimraf": "^3.0.2",
+    "ts-loader": "^8.0.3",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.2",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "bin": "./build/index.js",
+  "pkg": {
+    "assets": [
+      "./build/web",
+      "./node_modules/**/*"
+    ],
+    "options": [
+      "experimental-modules"
+    ]
   }
 }

@@ -15,8 +15,8 @@ getCredentialFile().then(res=>{
   connectDB().then(async (db) => {
     startServer();
     let userIds: string[] = [];
-    await PromiseBL.map(listenerUsers, async (username) => {
-      getUserId(username).then((userId) => {
+    await PromiseBL.map(listenerUsers, async (username: string) => {
+      getUserId(username).then((userId: string) => {
         userIds.push(userId);
       });
     });
