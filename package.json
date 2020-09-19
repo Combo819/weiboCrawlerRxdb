@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "start:dev": "nodemon",
-    "build": "rimraf ./build && tsc && cp -r ./src/web ./build/web",
+    "build": "rimraf ./build && tsc ",
+    "copy":"npx cpy '**/*' '!**/*.ts' ../build/ --cwd=src/ --no-overwrite --parents",
     "pkg": "pkg . --out-path=dist/ -t node12-win-x64"
   },
   "keywords": [],
@@ -48,6 +49,7 @@
     "@types/puppeteer-core": "^2.0.0",
     "@types/readline-sync": "^1.4.3",
     "@types/uuid": "^8.3.0",
+    "cpy-cli": "^3.1.1",
     "nodemon": "^2.0.4",
     "rimraf": "^3.0.2",
     "ts-loader": "^8.0.3",
