@@ -8,9 +8,9 @@
     "tsc": "tsc",
     "start:dev": "nodemon",
     "build": "rimraf ./build && tsc ",
-    "webpack":"webpack",
-    "copy":"npx cpy '**/*' '!**/*.ts' ../build/ --cwd=src/ --no-overwrite --parents",
-    "pkg": "pkg . --out-path=dist/ -t node12-win-x64"
+    "webpack": "webpack",
+    "copy": "npx cpy '**/*' '!**/*.ts' ../build/ --cwd=src/ --no-overwrite --parents",
+    "pkg": "pkg . --out-path=dist/ -t node12"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +31,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
+    "get-port": "^5.1.1",
     "is-url": "^1.2.4",
     "leveldown": "^5.6.0",
     "mongoose": "^5.10.2",
@@ -64,9 +65,6 @@
     "assets": [
       "./build/web",
       "./node_modules/**/*"
-    ],
-    "options": [
-      "experimental-modules"
     ]
   }
 }

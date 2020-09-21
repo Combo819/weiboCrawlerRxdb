@@ -7,14 +7,14 @@ import {
   CommentCollection,
   SubCommentDocument,
 } from "../database/collections";
-import { port,credentialJsonPath,staticPath } from "../config";
+import { port, credentialJsonPath, staticPath } from "../config";
 import express from "express";
 import cors from "cors";
 import { database } from "../database/connect";
 import { Promise as PromiseBl } from "bluebird";
 import _ from "lodash";
 import path from "path";
-
+import getPort from "get-port";
 
 function startServer(): void {
   interface ResponseBody {
@@ -22,15 +22,14 @@ function startServer(): void {
     message?: any;
   }
 
-
   const app = express();
-  
+
   app.use(express.urlencoded());
   app.use(express.json());
   app.use(cors());
-  app.use('/static',express.static(path.resolve(__dirname,'../','web')));
+  app.use("/static", express.static(path.resolve(__dirname, "../", "web")));
   app.use(express.static(staticPath));
-  
+
   app.post("/api/save", (request, response) => {
     const { weiboId }: { weiboId: string } = request.body;
     console.log(weiboId, "weiboId");
@@ -54,7 +53,8 @@ function startServer(): void {
     }
     const weiboCollection: WeiboCollection = database.weibo;
     weiboCollection
-      .find().sort('saveTime')
+      .find()
+      .sort("saveTime")
       .limit(parseInt(pageSize))
       .skip(parseInt(pageSize) * parseInt(page))
       .exec()
@@ -184,9 +184,13 @@ function startServer(): void {
       const filteredSubCommentsUser: SubCommentWithUser[] = await PromiseBl.map(
         filteredSubComments,
         async (item) => {
-          const userDoc:UserDocument = await item.populate("user");
-          const commentDoc:CommentDocument = await item.populate("rootid");
-          const newSubComment: SubCommentWithUser = { ...item._data, user:userDoc._data, rootid:commentDoc._data };
+          const userDoc: UserDocument = await item.populate("user");
+          const commentDoc: CommentDocument = await item.populate("rootid");
+          const newSubComment: SubCommentWithUser = {
+            ...item._data,
+            user: userDoc._data,
+            rootid: commentDoc._data,
+          };
           return newSubComment;
         }
       );
@@ -207,11 +211,14 @@ function startServer(): void {
       response.send({ comment: null, totalNumber: 0 });
     }
   });
-  app.get('/',(req, res)=> {
-    res.sendFile(path.resolve(__dirname,'../','web','index.html'));
-  })
-  app.listen(port || 5000, () => {
-    console.log(`listening on port ${port || 5000}`);
+  app.get("/", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../", "web", "index.html"));
+  });
+  getPort({ port: [port, port + 1, port + 2] }).then((res: number) => {
+    const availblePort: number = res;
+    app.listen(availblePort || 5000, () => {
+      console.log(`listening on port ${availblePort || 5000}`);
+    });
   });
 }
 

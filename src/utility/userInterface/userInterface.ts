@@ -58,7 +58,9 @@ async function createNewJson() {
 
     if (index === 0) {
       const chromePath = readlineSync.questionPath(
-        `please provide your chrome path: \n`
+        `please provide your chrome path: \n 
+        Usually, Win: ‪C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\n
+        Mac: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n`
       );
       const cookie: string = await getTokenByPuppeteer(chromePath.replace(/\\/g, "\\\\"));
       saveJson(cookie, users);
@@ -103,7 +105,9 @@ async function reviseCookie(users: string[]) {
 
   if (index === 0) {
     const chromePath = readlineSync.questionPath(
-      `please provide your chrome path: \n`
+      `please provide your chrome path: \n 
+      Usually, Win: ‪C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\n
+      Mac: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n`
     );
     const cookie: string = await getTokenByPuppeteer(
       chromePath.replace(/\\/g, "\\\\")
