@@ -2,7 +2,7 @@ import readlineSync from "readline-sync";
 import path from "path";
 import _ from "lodash";
 import { getTokenByPuppeteer } from "../../browser";
-import {credentialJsonPath} from '../../config'
+import { credentialJsonPath } from "../../config";
 const fs = require("fs");
 
 interface ParsedConfigs {
@@ -21,7 +21,7 @@ async function getCredentialFile() {
     try {
       const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
       let { token: cookie, users } = parsedConfigs;
-      console.log(parsedConfigs,'parsedConfigs')
+      console.log(parsedConfigs, "parsedConfigs");
       if (!cookie) {
         cookie = (await reviseCookie(users)).cookie;
       }
@@ -35,7 +35,7 @@ async function getCredentialFile() {
     }
   }
 }
-async function createNewJson() {
+async function createNewJson():Promise<{cookie:string,users:string[]}> {
   if (
     readlineSync.keyInYN(
       `can not find a credential.json file or the file is invalid to provide the weibo token and user list, do you want to create one? credential.json`
@@ -57,12 +57,7 @@ async function createNewJson() {
     );
 
     if (index === 0) {
-      const chromePath = readlineSync.questionPath(
-        `please provide your chrome path: \n 
-        Usually, Win: ‪C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\n
-        Mac: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n`
-      );
-      const cookie: string = await getTokenByPuppeteer(chromePath.replace(/\\/g, "\\\\"));
+      const cookie: string = await getTokenByPuppeteer();
       saveJson(cookie, users);
       return { cookie, users };
     } else if (index === 1) {
@@ -70,48 +65,37 @@ async function createNewJson() {
         "please copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md: \n"
       );
       if (!cookie.length) {
-        console.log("program terminated. 程序结束运行。");
-        process.exit(1);
+        console.log("cookie should not be empty");
+        throw new Error('cookie should not be empty')
       }
       saveJson(cookie, users);
       return { cookie, users };
     } else {
-      console.log("program terminated.");
-      process.exit(1);
+      throw new Error(`Cancelled`);
     }
   } else {
     console.log("program terminated.");
     process.exit(1);
   }
+  
 }
 
 function saveJson(cookie: string, users: string[]) {
   let data = JSON.stringify({ token: cookie, users: users });
-  fs.writeFile(
-    credentialJsonPath,
-    data,
-    (err: Error) => {
-      if (err) throw err;
-      console.log("Data written to file");
-    }
-  );
+  fs.writeFile(credentialJsonPath, data, (err: Error) => {
+    if (err) throw err;
+    console.log("Data written to file");
+  });
 }
 
-async function reviseCookie(users: string[]) {
+async function reviseCookie(users: string[]):Promise<{cookie:string,users:string[]}> {
   const index = readlineSync.keyInSelect(
     ["browser", "copy and paste"],
     "How do you want to get the weibo token?  "
   );
 
   if (index === 0) {
-    const chromePath = readlineSync.questionPath(
-      `please provide your chrome path: \n 
-      Usually, Win: ‪C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\n
-      Mac: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n`
-    );
-    const cookie: string = await getTokenByPuppeteer(
-      chromePath.replace(/\\/g, "\\\\")
-    );
+    const cookie: string = await getTokenByPuppeteer();
     saveJson(cookie, users);
     return { cookie, users };
   } else if (index === 1) {
@@ -120,19 +104,19 @@ async function reviseCookie(users: string[]) {
     );
     if (!cookie.length) {
       console.log("program terminated. 程序结束运行。");
-      process.exit(1);
+      throw new Error('cookie should not be empty');
     }
     saveJson(cookie, users);
     return { cookie, users };
   } else {
     console.log("program terminated. 程序结束运行。");
-    process.exit(1);
+    throw new Error('Cancelled')
   }
 }
 
-async function reviseUsers(cookie: string) {
+async function reviseUsers(cookie: string):Promise<{cookie:string,users:string[]}> {
   const usersStr = readlineSync.question(
-    'please provide your weibo usernames, which you want to list the direct messages from, separete them by "," if they are more than 1. For example VanDarkHolme,BillyHerrington. \n  '
+    'please provide your weibo usernames, which you want to list the direct messages from, separate them by "," if they are more than 1. For example VanDarkHolme,BillyHerrington. \n  '
   );
   const users = _.chain(usersStr)
     .trim()

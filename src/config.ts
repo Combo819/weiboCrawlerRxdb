@@ -1,11 +1,5 @@
 import path from "path";
 const fs = require("fs");
- 
-
-
-
- 
-
 const baseUrl: string = "https://m.weibo.cn";
 
 const Q_CONCURRENCY: number = 1;
@@ -14,8 +8,6 @@ const WEIBO_ID = "4543515809553125";
 if (!WEIBO_ID || WEIBO_ID.length === 0) {
   throw new Error("Please provide a weibo id");
 }
-
-
 
 const staticPath = path.resolve(process.cwd(), "./", "static");
 

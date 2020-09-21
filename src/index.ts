@@ -8,7 +8,6 @@ import {getCredentialFile} from './utility/userInterface'
 
 
 getCredentialFile().then(res=>{
-
   const {cookie,users:listenerUsers} = res;
   axios.defaults.headers.common['cookie'] = cookie; 
  

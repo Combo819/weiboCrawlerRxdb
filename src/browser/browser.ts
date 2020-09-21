@@ -1,15 +1,14 @@
 import puppeteer from "puppeteer-core";
 import { URL } from "url";
 import _ from "lodash";
-
-const getTokenByPuppeteer: (browserPath: string) => Promise<string> = (
-  browserPath: string
-) => {
+const ChromeLauncher = require("chrome-launcher");
+const chromePath = ChromeLauncher.Launcher.getFirstInstallation();
+const getTokenByPuppeteer: () => Promise<string> = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const browser: puppeteer.Browser = await puppeteer.launch({
         product: "chrome",
-        executablePath: browserPath,
+        executablePath: chromePath,
         headless: false,
       });
       const page = await browser.newPage();
