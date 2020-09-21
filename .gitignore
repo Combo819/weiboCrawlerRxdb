@@ -5,3 +5,5 @@ credential.json
 /weibocrawler-rxdb-*
 /credential*
 **/web
+/dist
+/copyScript.js

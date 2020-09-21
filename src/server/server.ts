@@ -7,7 +7,7 @@ import {
   CommentCollection,
   SubCommentDocument,
 } from "../database/collections";
-import { port } from "../config";
+import { port,credentialJsonPath,staticPath } from "../config";
 import express from "express";
 import cors from "cors";
 import { database } from "../database/connect";
@@ -29,7 +29,7 @@ function startServer(): void {
   app.use(express.json());
   app.use(cors());
   app.use('/static',express.static(path.resolve(__dirname,'../','web')));
-  app.use(express.static(path.resolve(__dirname,'../../','static')));
+  app.use(express.static(staticPath));
   
   app.post("/api/save", (request, response) => {
     const { weiboId }: { weiboId: string } = request.body;

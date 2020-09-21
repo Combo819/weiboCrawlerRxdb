@@ -8,6 +8,7 @@
     "tsc": "tsc",
     "start:dev": "nodemon",
     "build": "rimraf ./build && tsc ",
+    "webpack":"webpack",
     "copy":"npx cpy '**/*' '!**/*.ts' ../build/ --cwd=src/ --no-overwrite --parents",
     "pkg": "pkg . --out-path=dist/ -t node12-win-x64"
   },

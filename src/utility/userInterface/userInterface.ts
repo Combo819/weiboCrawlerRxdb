@@ -2,7 +2,7 @@ import readlineSync from "readline-sync";
 import path from "path";
 import _ from "lodash";
 import { getTokenByPuppeteer } from "../../browser";
-import { promises } from "fs";
+import {credentialJsonPath} from '../../config'
 const fs = require("fs");
 
 interface ParsedConfigs {
@@ -10,13 +10,13 @@ interface ParsedConfigs {
   users: string[];
 }
 async function getCredentialFile() {
-  if (!fs.existsSync(path.resolve(__dirname, "../../../", "credential.json"))) {
+  if (!fs.existsSync(credentialJsonPath)) {
     const { cookie, users } = await createNewJson();
 
     return { cookie, users };
   } else {
     const rawData: string = fs
-      .readFileSync(path.resolve(__dirname, "../../../", "credential.json"))
+      .readFileSync(credentialJsonPath)
       .toString("utf-8");
     try {
       const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
@@ -86,7 +86,7 @@ async function createNewJson() {
 function saveJson(cookie: string, users: string[]) {
   let data = JSON.stringify({ token: cookie, users: users });
   fs.writeFile(
-    path.resolve(__dirname, "../../../", "credential.json"),
+    credentialJsonPath,
     data,
     (err: Error) => {
       if (err) throw err;

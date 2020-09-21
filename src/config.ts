@@ -17,7 +17,7 @@ if (!WEIBO_ID || WEIBO_ID.length === 0) {
 
 
 
-const staticPath = path.resolve(__dirname, "../", "static");
+const staticPath = path.resolve(process.cwd(), "./", "static");
 
 if (!fs.existsSync(path)) {
   console.log("create folder " + staticPath);
@@ -25,7 +25,7 @@ if (!fs.existsSync(path)) {
 }
 
 
-
+const credentialJsonPath = path.resolve(process.cwd(),'./','credential.json');
 
 
 const port = 5001;
@@ -36,5 +36,5 @@ export {
   WEIBO_ID,
   staticPath,
   port,
-
+  credentialJsonPath,
 };
