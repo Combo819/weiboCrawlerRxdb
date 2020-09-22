@@ -219,7 +219,12 @@ function startServer(): void {
     app.listen(availblePort || 5000, () => {
       console.log(`listening on port ${availblePort || 5000} \n`);
       console.log(`open http://localhost:${availblePort}`);
-      open(`http://localhost:${availblePort}`);
+      try{
+        open(`http://localhost:${availblePort}`);
+      }catch(err){
+        console.log(err)
+      }
+     
     });
   });
 }
