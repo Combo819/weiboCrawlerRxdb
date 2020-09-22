@@ -15,7 +15,7 @@ import { Promise as PromiseBl } from "bluebird";
 import _ from "lodash";
 import path from "path";
 import getPort from "get-port";
-
+const open = require('open');
 function startServer(): void {
   interface ResponseBody {
     status: "success" | "error";
@@ -54,7 +54,7 @@ function startServer(): void {
     const weiboCollection: WeiboCollection = database.weibo;
     weiboCollection
       .find()
-      .sort("saveTime")
+      .sort({"saveTime":'desc'})
       .limit(parseInt(pageSize))
       .skip(parseInt(pageSize) * parseInt(page))
       .exec()
@@ -217,7 +217,9 @@ function startServer(): void {
   getPort({ port: [port, port + 1, port + 2] }).then((res: number) => {
     const availblePort: number = res;
     app.listen(availblePort || 5000, () => {
-      console.log(`listening on port ${availblePort || 5000}`);
+      console.log(`listening on port ${availblePort || 5000} \n`);
+      console.log(`open http://localhost:${availblePort}`);
+      open(`http://localhost:${availblePort}`);
     });
   });
 }

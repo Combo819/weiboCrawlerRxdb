@@ -2,7 +2,13 @@ import puppeteer from "puppeteer-core";
 import { URL } from "url";
 import _ from "lodash";
 const ChromeLauncher = require("chrome-launcher");
-const chromePath = ChromeLauncher.Launcher.getFirstInstallation();
+let chromePath = "";
+try {
+  ChromeLauncher.Launcher.getFirstInstallation();
+} catch (err) {
+  console.log(err);
+}
+
 const getTokenByPuppeteer: () => Promise<string> = () => {
   return new Promise(async (resolve, reject) => {
     try {

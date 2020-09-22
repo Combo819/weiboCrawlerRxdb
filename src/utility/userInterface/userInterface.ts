@@ -38,11 +38,11 @@ async function getCredentialFile() {
 async function createNewJson():Promise<{cookie:string,users:string[]}> {
   if (
     readlineSync.keyInYN(
-      `can not find a credential.json file or the file is invalid to provide the weibo token and user list, do you want to create one? credential.json`
+      `\ncan not find a credential.json file or the file is invalid to provide the weibo token and user list, do you want to create one? credential.json`
     )
   ) {
     const usersStr = readlineSync.question(
-      'please provide your weibo usernames that you want to listen the direct messages from, separete them by ",". For example VanDarkHolme,BillyHerrington. \n'
+      '\nplease provide your weibo usernames that you want to listen the direct messages from, separete them by ",". For example VanDarkHolme,BillyHerrington. \n'
     );
     const users = _.chain(usersStr)
       .trim()
@@ -53,7 +53,7 @@ async function createNewJson():Promise<{cookie:string,users:string[]}> {
     console.log(users);
     const index = readlineSync.keyInSelect(
       ["browser", "copy and paste"],
-      "How do you want to get the weibo token? "
+      "\nHow do you want to get the weibo cookie? "
     );
 
     if (index === 0) {
@@ -62,7 +62,7 @@ async function createNewJson():Promise<{cookie:string,users:string[]}> {
       return { cookie, users };
     } else if (index === 1) {
       const cookie: string = readlineSync.question(
-        "please copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md: \n"
+        "\nplease copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md: \n"
       );
       if (!cookie.length) {
         console.log("cookie should not be empty");
@@ -91,7 +91,7 @@ function saveJson(cookie: string, users: string[]) {
 async function reviseCookie(users: string[]):Promise<{cookie:string,users:string[]}> {
   const index = readlineSync.keyInSelect(
     ["browser", "copy and paste"],
-    "How do you want to get the weibo token?  "
+    "\nHow do you want to get the weibo cookie?  "
   );
 
   if (index === 0) {
@@ -100,7 +100,7 @@ async function reviseCookie(users: string[]):Promise<{cookie:string,users:string
     return { cookie, users };
   } else if (index === 1) {
     const cookie: string = readlineSync.question(
-      "please copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md \n  "
+      "\nplease copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md \n  "
     );
     if (!cookie.length) {
       console.log("program terminated. 程序结束运行。");
@@ -116,7 +116,7 @@ async function reviseCookie(users: string[]):Promise<{cookie:string,users:string
 
 async function reviseUsers(cookie: string):Promise<{cookie:string,users:string[]}> {
   const usersStr = readlineSync.question(
-    'please provide your weibo usernames, which you want to list the direct messages from, separate them by "," if they are more than 1. For example VanDarkHolme,BillyHerrington. \n  '
+    '\nplease provide your weibo usernames, which you want to list the direct messages from, separate them by "," if they are more than 1. For example VanDarkHolme,BillyHerrington. \n  '
   );
   const users = _.chain(usersStr)
     .trim()
