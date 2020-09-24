@@ -12,15 +12,18 @@ getCredentialFile().then(res=>{
   axios.defaults.headers.common['cookie'] = cookie; 
  
   connectDB().then(async (db) => {
-    startServer();
+    
     let userIds: string[] = [];
+    let usernames:string[] = [];
     await PromiseBL.map(listenerUsers, async (username: string) => {
       getUserId(username).then((userId: string) => {
         userIds.push(userId);
+        usernames.push(username);
       });
-    });
+    },{concurrency:2});
 
     const listener = new Listener(userIds || []);
+    startServer(usernames);
   });
 
 }).catch(err=>{

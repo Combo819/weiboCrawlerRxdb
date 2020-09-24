@@ -30,7 +30,7 @@ const getTokenByPuppeteer: () => Promise<string> = () => {
           });
           resolve(_.trim(cookiesStr));
           await page.evaluate(
-            ' alert("token get. the browser will be closed") '
+            ' alert("cookie get. the browser will be closed") '
           );
           await browser.close();
         }

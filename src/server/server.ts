@@ -16,7 +16,7 @@ import _ from "lodash";
 import path from "path";
 import getPort from "get-port";
 const open = require("open");
-function startServer(): void {
+function startServer(usernames:string[]): void {
   interface ResponseBody {
     status: "success" | "error";
     message?: any;
@@ -43,6 +43,10 @@ function startServer(): void {
         response.send(resBody);
       });
   });
+
+  app.get('/api/monitor',(request,response)=>{
+    response.send({users:usernames});
+  })
 
   app.get("/api/weibos", (request, response) => {
     const page: string = (request.query.page || 0) as string;

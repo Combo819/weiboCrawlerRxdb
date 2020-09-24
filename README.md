@@ -9,7 +9,7 @@
 3. add the mongodb uri in the `src/credential.json`
 ```json
 {
-    "token":"a_very_long_string",
+    "cookie":"a_very_long_string",
     "URI":"mongodb://localhost:27017"
 }
 ```

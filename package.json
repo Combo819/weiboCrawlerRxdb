@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "start:dev": "nodemon",
-    "build": "rimraf ./build && tsc ",
+    "build": "rimraf ./build && tsc &&npx cpy '**/*' '!**/*.ts' ../build/ --cwd=src/ --no-overwrite --parents",
     "webpack": "webpack",
     "copy": "npx cpy '**/*' '!**/*.ts' ../build/ --cwd=src/ --no-overwrite --parents",
     "pkg": "pkg . --out-path=dist/"
@@ -68,7 +68,7 @@
       "./build/web",
       "./node_modules/**/*"
     ],
-    "targets":[
+    "targets": [
       "node12-linux",
       "node12-macos",
       "node12-win"

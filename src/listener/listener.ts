@@ -23,9 +23,7 @@ class Listener {
       console.log(this.listeners,this.messageId);
       if (!this.messageId[userId]) {
         this.messageId[userId] = [];
-        getMessage({ count: 10, uid: userId }).then((res) => {
-
-            
+        getMessage({ count: 10, uid: userId }).then((res) => {  
           const { msgs } = res.data.data;
           msgs.reverse().forEach((element: any) => {
             const { id: messageId } = element;

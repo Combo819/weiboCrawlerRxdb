@@ -6,7 +6,7 @@ import { credentialJsonPath } from "../../config";
 const fs = require("fs");
 
 interface ParsedConfigs {
-  token: string;
+  cookie: string;
   users: string[];
 }
 async function getCredentialFile() {
@@ -20,7 +20,7 @@ async function getCredentialFile() {
       .toString("utf-8");
     try {
       const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
-      let { token: cookie, users } = parsedConfigs;
+      let {  cookie, users } = parsedConfigs;
       console.log(parsedConfigs, "parsedConfigs");
       if (!cookie) {
         cookie = (await reviseCookie(users)).cookie;
@@ -38,7 +38,7 @@ async function getCredentialFile() {
 async function createNewJson():Promise<{cookie:string,users:string[]}> {
   if (
     readlineSync.keyInYN(
-      `\ncan not find a credential.json file or the file is invalid to provide the weibo token and user list, do you want to create one? credential.json`
+      `\ncan not find a credential.json file or the file is invalid to provide the weibo cookie and user list, do you want to create one? credential.json`
     )
   ) {
     const usersStr = readlineSync.question(
@@ -81,7 +81,7 @@ async function createNewJson():Promise<{cookie:string,users:string[]}> {
 }
 
 function saveJson(cookie: string, users: string[]) {
-  let data = JSON.stringify({ token: cookie, users: users });
+  let data = JSON.stringify({ cookie, users: users });
   fs.writeFile(credentialJsonPath, data, (err: Error) => {
     if (err) throw err;
     console.log("Data written to file");
