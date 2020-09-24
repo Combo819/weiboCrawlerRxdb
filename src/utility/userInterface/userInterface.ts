@@ -62,7 +62,7 @@ async function createNewJson():Promise<{cookie:string,users:string[]}> {
       return { cookie, users };
     } else if (index === 1) {
       const cookie: string = readlineSync.question(
-        "\nplease copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md: \n"
+        "\nplease copy and paste your cookie here. ref: https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md \n  "
       );
       if (!cookie.length) {
         console.log("cookie should not be empty");

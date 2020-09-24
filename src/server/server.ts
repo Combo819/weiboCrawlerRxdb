@@ -15,6 +15,8 @@ import { Promise as PromiseBl } from "bluebird";
 import _ from "lodash";
 import path from "path";
 import getPort from "get-port";
+const ChromeLauncher = require("chrome-launcher");
+  
 const open = require("open");
 function startServer(usernames:string[]): void {
   interface ResponseBody {
@@ -222,10 +224,9 @@ function startServer(usernames:string[]): void {
     app.listen(availblePort || 5000, () => {
       console.log(`listening on port ${availblePort || 5000} \n`);
       console.log(`open http://localhost:${availblePort}`);
-      const ChromeLauncher = require("chrome-launcher");
       let chromePath = "";
       try {
-        ChromeLauncher.Launcher.getFirstInstallation();
+        chromePath = ChromeLauncher.Launcher.getFirstInstallation();
       } catch (err) {
         console.log(err);
       }

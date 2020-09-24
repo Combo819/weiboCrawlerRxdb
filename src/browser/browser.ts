@@ -4,7 +4,7 @@ import _ from "lodash";
 const ChromeLauncher = require("chrome-launcher");
 let chromePath = "";
 try {
-  ChromeLauncher.Launcher.getFirstInstallation();
+  chromePath = ChromeLauncher.Launcher.getFirstInstallation();
 } catch (err) {
   console.log(err);
 }
