@@ -15,7 +15,7 @@ import { Promise as PromiseBl } from "bluebird";
 import _ from "lodash";
 import path from "path";
 import getPort from "get-port";
-const open = require('open');
+const open = require("open");
 function startServer(): void {
   interface ResponseBody {
     status: "success" | "error";
@@ -27,7 +27,7 @@ function startServer(): void {
   app.use(express.urlencoded());
   app.use(express.json());
   app.use(cors());
-  app.use("/static", express.static(path.resolve(__dirname, "../", "web")));
+  
   app.use(express.static(staticPath));
 
   app.post("/api/save", (request, response) => {
@@ -54,7 +54,7 @@ function startServer(): void {
     const weiboCollection: WeiboCollection = database.weibo;
     weiboCollection
       .find()
-      .sort({"saveTime":'desc'})
+      .sort({ saveTime: "desc" })
       .limit(parseInt(pageSize))
       .skip(parseInt(pageSize) * parseInt(page))
       .exec()
@@ -211,20 +211,23 @@ function startServer(): void {
       response.send({ comment: null, totalNumber: 0 });
     }
   });
-  app.get("/", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../", "web", "index.html"));
-  });
+  app.use("/", express.static(path.resolve(__dirname, "../", "web")));
+
   getPort({ port: [port, port + 1, port + 2] }).then((res: number) => {
     const availblePort: number = res;
     app.listen(availblePort || 5000, () => {
       console.log(`listening on port ${availblePort || 5000} \n`);
       console.log(`open http://localhost:${availblePort}`);
-      try{
-        open(`http://localhost:${availblePort}`);
-      }catch(err){
-        console.log(err)
+      const ChromeLauncher = require("chrome-launcher");
+      let chromePath = "";
+      try {
+        ChromeLauncher.Launcher.getFirstInstallation();
+      } catch (err) {
+        console.log(err);
       }
-     
+      if(chromePath!==''){
+        open(`http://localhost:${availblePort}`);
+      }
     });
   });
 }

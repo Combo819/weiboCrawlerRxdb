@@ -69,7 +69,9 @@
       "./node_modules/**/*"
     ],
     "targets":[
-      "node12-linux"
+      "node12-linux",
+      "node12-macos",
+      "node12-win"
     ]
   }
 }
