@@ -1,7 +1,7 @@
 import {crawlerAxios} from "./config";
 import { AxiosPromise } from "axios";
 import _ from 'lodash';
-function getUserId(username:string){
+function getUserId(username:string):Promise<string>{
     console.log(username,'username')
     return crawlerAxios({
         url:`/n/${username}`
