@@ -21,7 +21,6 @@ async function getCredentialFile() {
     try {
       const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
       let {  cookie, users } = parsedConfigs;
-      console.log(parsedConfigs, "parsedConfigs");
       if (!cookie) {
         cookie = (await reviseCookie(users)).cookie;
       }
@@ -50,7 +49,6 @@ async function createNewJson():Promise<{cookie:string,users:string[]}> {
       .replace("，", ",")
       .value()
       .split(",");
-    console.log(users);
     const index = readlineSync.keyInSelect(
       ["browser", "copy and paste"],
       "\nHow do you want to get the weibo cookie? "
