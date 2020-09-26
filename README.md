@@ -3,7 +3,7 @@
 此应用需要一个微博账号来启动。可以通过复制微博ID到自带的网页上备份新的微博，也可以监听其他微博账号的私信来备份新微博。  
 比如我们用微博账号A来启动本应用，并监听微博账号B，C。那么B，C私信分享微博给A，就能自动备份分享的微博。
 ### 下载
-[pre-release-v0.1](https://github.com/Combo819/weiboCrawlerRxdb/releases)下载对应系统版本，下载后解压即可
+[pre-release](https://github.com/Combo819/weiboCrawlerRxdb/releases)下载对应系统版本，下载后解压即可
 ### 使用
 #### 1. 创建配置文件(可选)
 此程序的根目录需要创建一个`credential.json`文件来记录微博的cookie和需要监听的用户。
