@@ -19,8 +19,12 @@
 #### 2. 启动程序
 ##### Windows
 方法一：双击`weiboCrawlerTs-win.exe`  
-方法二：用在当前目录下打开Powershell或者cmd，然后运行`.\weiboCrawlerTs-win.exe`
+方法二：用在当前目录下打开Powershell或者cmd，然后运行`.\weiboCrawlerTs-win.exe`  
+两种方法都要右键点击窗口左上角的图标，点击属性，把快速编辑模式关闭，否则需要不断按回车来保持程序运行。
 ##### Linux
 用terminal打开当前目录,运行`./weiboCrawlerTs-linux`
 ##### macOS
-用terminal打开当前目录,运行`./weiboCrawlerTs-macos`
+用terminal打开当前目录,运行`./weiboCrawlerTs-macos`或者直接鼠标双击`./weiboCrawlerTs-macos`。mac可能需要在系统偏好设置里面的安全与隐私点击允许。
+#### 3. 初始化程序
+如果设置了`1.创建配置文件`则不需进行此步。  
+当你运行程序后，程序会引导你一步步初始化你的配置。一共两个部分，拿cookie和提供
