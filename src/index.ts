@@ -28,4 +28,4 @@ getCredentialFile()
       startServer(usernames);
     });
   })
-  .catch((err) => {});
+  .catch((err) => {console.log(err)});

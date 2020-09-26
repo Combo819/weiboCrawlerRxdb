@@ -1,5 +1,4 @@
 import readlineSync from "readline-sync";
-import path from "path";
 import _ from "lodash";
 import { getTokenByPuppeteer } from "../../browser";
 import { credentialJsonPath } from "../../config";
@@ -20,7 +19,7 @@ async function getCredentialFile() {
       .toString("utf-8");
     try {
       const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
-      let {  cookie, users } = parsedConfigs;
+      let { cookie, users } = parsedConfigs;
       if (!cookie) {
         cookie = (await reviseCookie(users)).cookie;
       }
@@ -30,11 +29,12 @@ async function getCredentialFile() {
       return { cookie, users };
     } catch (err) {
       const { cookie, users } = await createNewJson();
+     
       return { cookie, users };
     }
   }
 }
-async function createNewJson():Promise<{cookie:string,users:string[]}> {
+async function createNewJson(): Promise<{ cookie: string; users: string[] }> {
   if (
     readlineSync.keyInYN(
       `\ncan not find a credential.json file or the file is invalid to provide the weibo cookie and user list, do you want to create one? credential.json`
@@ -43,12 +43,16 @@ async function createNewJson():Promise<{cookie:string,users:string[]}> {
     const usersStr = readlineSync.question(
       '\nplease provide your weibo usernames that you want to listen the direct messages from, separete them by ",". For example VanDarkHolme,BillyHerrington. \n'
     );
-    const users = _.chain(usersStr)
-      .trim()
-      .replace("@", "")
-      .replace("，", ",")
-      .value()
-      .split(",");
+    
+    const users =
+      usersStr === ""
+        ? []
+        : _.chain(usersStr)
+            .trim()
+            .replace("@", "")
+            .replace("，", ",")
+            .value()
+            .split(",");
     const index = readlineSync.keyInSelect(
       ["browser", "copy and paste"],
       "\nHow do you want to get the weibo cookie? "
@@ -64,7 +68,7 @@ async function createNewJson():Promise<{cookie:string,users:string[]}> {
       );
       if (!cookie.length) {
         console.log("cookie should not be empty");
-        throw new Error('cookie should not be empty')
+        throw new Error("cookie should not be empty");
       }
       saveJson(cookie, users);
       return { cookie, users };
@@ -75,7 +79,6 @@ async function createNewJson():Promise<{cookie:string,users:string[]}> {
     console.log("program terminated.");
     process.exit(1);
   }
-  
 }
 
 function saveJson(cookie: string, users: string[]) {
@@ -86,7 +89,9 @@ function saveJson(cookie: string, users: string[]) {
   });
 }
 
-async function reviseCookie(users: string[]):Promise<{cookie:string,users:string[]}> {
+async function reviseCookie(
+  users: string[]
+): Promise<{ cookie: string; users: string[] }> {
   const index = readlineSync.keyInSelect(
     ["browser", "copy and paste"],
     "\nHow do you want to get the weibo cookie?  "
@@ -102,27 +107,34 @@ async function reviseCookie(users: string[]):Promise<{cookie:string,users:string
     );
     if (!cookie.length) {
       console.log("program terminated. 程序结束运行。");
-      throw new Error('cookie should not be empty');
+      throw new Error("cookie should not be empty");
     }
     saveJson(cookie, users);
     return { cookie, users };
   } else {
     console.log("program terminated. 程序结束运行。");
-    throw new Error('Cancelled')
+    throw new Error("Cancelled");
   }
 }
 
-async function reviseUsers(cookie: string):Promise<{cookie:string,users:string[]}> {
+async function reviseUsers(
+  cookie: string
+): Promise<{ cookie: string; users: string[] }> {
   const usersStr = readlineSync.question(
     '\nplease provide your weibo usernames, which you want to list the direct messages from, separate them by "," if they are more than 1. For example VanDarkHolme,BillyHerrington. \n  '
   );
-  const users = _.chain(usersStr)
-    .trim()
-    .replace("@", "")
-    .replace("，", ",")
-    .value()
-    .split(",");
+
+  const users =
+    usersStr === ""
+      ? []
+      : _.chain(usersStr)
+          .trim()
+          .replace("@", "")
+          .replace("，", ",")
+          .value()
+          .split(",");
   saveJson(cookie, users);
+ 
   return { cookie, users };
 }
 
