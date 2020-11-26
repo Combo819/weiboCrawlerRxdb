@@ -9,7 +9,7 @@ import {
 } from "../database/collections";
 import { port, credentialJsonPath, staticPath } from "../config";
 import express from "express";
-import cors from "cors";
+
 import { database } from "../database/connect";
 import { Promise as PromiseBl } from "bluebird";
 import _ from "lodash";
@@ -28,7 +28,7 @@ function startServer(usernames:string[]): void {
 
   app.use(express.urlencoded());
   app.use(express.json());
-  app.use(cors());
+
   
   app.use(express.static(staticPath));
 
