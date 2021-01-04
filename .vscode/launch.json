@@ -5,16 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/src/index.ts",
+      "name": "Current Project",
+      "type": "node",
       "request": "launch",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "type": "pwa-node",
+      "args": ["${workspaceRoot}/src"],
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
-      "sourceMaps": false,
+      "sourceMaps": true,
       "cwd": "${workspaceRoot}",
+      "protocol": "inspector"
     },
 
     {
@@ -23,7 +21,7 @@
       "request": "launch",
       "args": ["${relativeFile}"],
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
-      "sourceMaps": false,
+      "sourceMaps": true,
       "cwd": "${workspaceRoot}",
       "protocol": "inspector"
     }
