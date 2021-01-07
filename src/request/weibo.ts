@@ -19,4 +19,10 @@ function getRealWeiboUrl(shortUrl:string):AxiosPromise{
     })
 }
 
-export {getWeiboApi,getRealWeiboUrl};
+function checkCookie(cookie:string):AxiosPromise{
+    return crawlerAxios({
+        url:'/users/show'
+    })
+}
+
+export {getWeiboApi,getRealWeiboUrl,checkCookie};

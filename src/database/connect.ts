@@ -16,6 +16,7 @@ import {
   RxDocument,
   addRxPlugin,
 } from "rxdb";
+import {rxdbPath} from '../config'
 
 const weiboCollectionMethods: WeiboCollectionMethods = {
   countAllDocuments: async function(this: WeiboCollection) {
@@ -38,7 +39,7 @@ export let database: DatabaseType | null;
 const connectDB = async () => {
   try {
     database = await createRxDatabase<DataBaseCollections>({
-      name: "weibocrawler",
+      name: rxdbPath,
       adapter: leveldown,
     });
     await database.collection({

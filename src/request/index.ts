@@ -1,4 +1,4 @@
-import { getWeiboApi,getRealWeiboUrl } from "./weibo";
+import { getWeiboApi,getRealWeiboUrl,checkCookie } from "./weibo";
 import {getCommentApi} from './comment';
 import {getSubCommentApi} from './subComment';
 import {downloadImageApi} from './image';
@@ -7,4 +7,4 @@ import {getMessage} from './message';
 import {getUserId} from './user';
 import {axios} from './config'
 
-export {getWeiboApi,getCommentApi,getSubCommentApi,downloadImageApi,downloadVideoApi,getMessage,getUserId,getRealWeiboUrl,axios}
+export {getWeiboApi,getCommentApi,getSubCommentApi,downloadImageApi,downloadVideoApi,getMessage,getUserId,getRealWeiboUrl,axios,checkCookie}

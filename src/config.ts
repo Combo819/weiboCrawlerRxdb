@@ -18,6 +18,7 @@ if (!fs.existsSync(path)) {
 
 
 const credentialJsonPath = path.resolve(process.cwd(),'./','credential.json');
+const rxdbPath = path.resolve(process.cwd(),"./rxdb","weibocrawler");
 
 
 const port = 5000;
@@ -29,4 +30,5 @@ export {
   staticPath,
   port,
   credentialJsonPath,
+  rxdbPath
 };
