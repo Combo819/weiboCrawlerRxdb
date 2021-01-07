@@ -108,11 +108,7 @@ function startServer(usernames:string[]): void {
           return { ...item._data, user: userDoc._data };
         }
       );
-      type PopulatedWeiboDoc = Omit<Omit<WeiboDocument, "user">, "comments"> & {
-        user: UserDocument;
-        comments: CommentDocument[];
-      };
-      const populatedWeiboDoc: PopulatedWeiboDoc = {
+      const populatedWeiboDoc = {
         ...weiboDoc._data,
         user: userDoc._data,
         comments: filteredCommentsWithUser,
@@ -180,19 +176,19 @@ function startServer(usernames:string[]): void {
         .drop(parseInt(page) * parseInt(pageSize))
         .take(parseInt(pageSize))
         .value();
-      type SubCommentWithUser = Omit<
+/*       type SubCommentWithUser = Omit<
         Omit<SubCommentDocument, "user">,
         "rootid"
       > & {
         user: UserDocument;
         rootid: CommentDocument;
-      };
-      const filteredSubCommentsUser: SubCommentWithUser[] = await PromiseBl.map(
+      }; */
+      const filteredSubCommentsUser = await PromiseBl.map(
         filteredSubComments,
         async (item) => {
           const userDoc: UserDocument = await item.populate("user");
           const commentDoc: CommentDocument = await item.populate("rootid");
-          const newSubComment: SubCommentWithUser = {
+          const newSubComment = {
             ...item._data,
             user: userDoc._data,
             rootid: commentDoc._data,
@@ -200,11 +196,11 @@ function startServer(usernames:string[]): void {
           return newSubComment;
         }
       );
-      type CommentPopulated = Omit<
+/*       type CommentPopulated = Omit<
         Omit<CommentDocument, "subComments">,
         "user"
-      > & { subComments: SubCommentWithUser[]; user: UserDocument };
-      const commentDocPopulated: CommentPopulated = {
+      > & { subComments: SubCommentWithUser[]; user: UserDocument }; */
+      const commentDocPopulated = {
         ...commentDoc._data,
         user: user._data,
         subComments: filteredSubCommentsUser,
@@ -217,7 +213,7 @@ function startServer(usernames:string[]): void {
       response.send({ comment: null, totalNumber: 0 });
     }
   });
-  app.use("/", express.static(path.resolve(__dirname, "../", "web")));
+  app.use("/", express.static(path.resolve(__dirname, "../../", "frontend","build")));
 
   getPort({ port: [port, port + 1, port + 2] }).then((res: number) => {
     const availblePort: number = res;

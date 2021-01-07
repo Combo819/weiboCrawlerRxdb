@@ -75,7 +75,7 @@ class Listener {
         weiboId = await this.parseWeiboId(msgText);
     }else{
         const $ = cheerio.load(msgText);
-        const url = $('a')[0].attribs.href;
+        const url:string = $('a').attr("href")||''
         weiboId = await this.parseWeiboId(url);
     }
     return weiboId||'';
@@ -86,7 +86,7 @@ class Listener {
       try{
         const {data} = await getRealWeiboUrl(urlStr);
         const $ = cheerio.load(data);
-        const url = $('a')[0].attribs.href;
+        const url:string = $('a').attr("href")||''
         const realUrlObj = new URL(url);
         const weiboId = _.last(realUrlObj.pathname.split("/"));
         return weiboId
@@ -94,7 +94,6 @@ class Listener {
         console.log(err);
         return '';
       }
-      
     }else{
       const weiboId = _.last(urlObj.pathname.split("/"));
       console.log(urlStr,weiboId)

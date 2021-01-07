@@ -119,7 +119,7 @@ const func = (params: commentParams): Promise<any> => {
       .then(async (res) => {
         // console.log(res, "res in getting comment");
         if (!res.data.data) {
-          resolve();
+          resolve(null);
           return;
         }
         const { data, maxId, maxIdType } = camelcaseKeys(res.data.data, {
@@ -147,7 +147,7 @@ const func = (params: commentParams): Promise<any> => {
             { func: func, params: { weiboDoc, id, mid, maxId, maxIdType } },
           ]);
         }
-        resolve();
+        resolve(null);
       })
       .catch((err) => {
         reject(err);

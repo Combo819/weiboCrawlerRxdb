@@ -6,7 +6,6 @@ function getUserId(username:string):Promise<string>{
     return crawlerAxios({
         url:`/n/${username}`
     }).then((res:any)=>{
-        
         const {request:{path}} = res;
         const pathArr = path.split('/') ;
         

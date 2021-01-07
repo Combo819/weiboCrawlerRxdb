@@ -101,7 +101,7 @@ function func(params: SubCommentParams): Promise<any> {
           deep: true,
         });
         if (typeof data !== "object") {
-          resolve();
+          resolve(null);
           return;
         }
         await map(data, iteratee);
@@ -120,7 +120,7 @@ function func(params: SubCommentParams): Promise<any> {
           );
           q.push([{ func, params: { commentDoc, cid, maxId, maxIdType } }]);
         }
-        resolve();
+        resolve(null);
       })
       .catch((err) => {
         console.log(err);
