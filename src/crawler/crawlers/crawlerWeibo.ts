@@ -25,7 +25,7 @@ async function crawlerWeibo(weiboId: string): Promise<WeiboDocument|null> {
     try {
       renderText = $("script").get()[1].children[0].data;
     } catch (err) {
-      console.log(`the weibo doesn't exist or cookie expired`);
+      console.error(`the weibo doesn't exist or cookie expired`);
       throw err;
     }
     const renderData = Function(renderText + " return $render_data")();
