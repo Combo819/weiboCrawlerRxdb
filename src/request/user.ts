@@ -3,7 +3,7 @@ import { AxiosPromise } from "axios";
 import _ from 'lodash';
 function getUserId(username:string):Promise<string>{
     return crawlerAxios({
-        url:`/n/${username}`
+        url:encodeURI(`/n/${username}`)
     }).then((res:any)=>{
         const {request:{path}} = res;
         const pathArr = path.split('/') ;
