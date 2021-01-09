@@ -1,8 +1,9 @@
 /node_modules
+/.vscode
 credential.json
 /static
-/storage
 /build
+/storage
 /weibocrawler-rxdb-*
 /credential*
 **/web
@@ -10,3 +11,6 @@ credential.json
 /copyScript.js
 /rxdb
 /src/images
+**/node_modules
+**/build
+**/.vscode
