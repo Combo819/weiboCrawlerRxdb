@@ -8,6 +8,7 @@ import { getCredentialFile } from "./utility/readCredential";
 getCredentialFile()
   .then((res) => {
     const { cookie, users: listenerUsers } = res;
+    console.log(cookie);
     axios.defaults.headers.common["cookie"] = cookie;
     checkCookie(cookie).then(res => {
       console.warn('The cookie is invalid or expired');
