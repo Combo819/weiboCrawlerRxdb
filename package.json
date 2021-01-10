@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "start": "nodemon",
-    "build": "rimraf ./build && tsc &&npx cpy '**/*' '!**/*.ts' ../build/ --cwd=src/ --no-overwrite --parents"
+    "build": "rimraf ./build &&npx tsc"
   },
   "keywords": [],
   "author": "",

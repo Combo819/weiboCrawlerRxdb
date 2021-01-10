@@ -12,8 +12,14 @@ if (!fs.existsSync(path)) {
 }
 
 
-const credentialJsonPath = path.resolve(process.cwd(),'./','credential.json');
-const rxdbPath = path.resolve(process.cwd(),"storage","rxdb","weibocrawler");
+const credentialJsonPath = path.resolve(process.cwd(), './', 'credential.json');
+
+const rxdbBasePath = path.resolve(process.cwd(), "storage", "rxdb");
+if (!fs.existsSync(rxdbBasePath)) {
+  console.log("creating folder " + rxdbBasePath);
+  fs.mkdirSync(rxdbBasePath, { recursive: true });
+}
+const rxdbPath = path.resolve(rxdbBasePath, "weibocrawler");
 
 
 const port = 5000;
