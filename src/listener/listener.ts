@@ -85,8 +85,7 @@ class Listener {
     if(urlObj.hostname==='t.cn'){
       try{
         const {data} = await getRealWeiboUrl(urlStr);
-        const $ = cheerio.load(data);
-        const url:string = $('a').attr("href")||''
+        const url:string = data.match(/\"https:\/\/weibo.com.+(?=\?)/g)[0].replace(`"`,"");
         const realUrlObj = new URL(url);
         const weiboId = _.last(realUrlObj.pathname.split("/"));
         return weiboId
