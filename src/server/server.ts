@@ -16,9 +16,9 @@ import _ from "lodash";
 import path from "path";
 import getPort from "get-port";
 const ChromeLauncher = require("chrome-launcher");
-  
+
 const open = require("open");
-function startServer(usernames:string[]): void {
+function startServer(usernames: string[]): void {
   interface ResponseBody {
     status: "success" | "error";
     message?: any;
@@ -29,7 +29,7 @@ function startServer(usernames:string[]): void {
   app.use(express.urlencoded());
   app.use(express.json());
 
-  
+
   app.use(express.static(staticPath));
 
   app.post("/api/save", (request, response) => {
@@ -46,8 +46,8 @@ function startServer(usernames:string[]): void {
       });
   });
 
-  app.get('/api/monitor',(request,response)=>{
-    response.send({users:usernames});
+  app.get('/api/monitor', (request, response) => {
+    response.send({ users: usernames });
   })
 
   app.get("/api/weibos", (request, response) => {
@@ -176,13 +176,6 @@ function startServer(usernames:string[]): void {
         .drop(parseInt(page) * parseInt(pageSize))
         .take(parseInt(pageSize))
         .value();
-/*       type SubCommentWithUser = Omit<
-        Omit<SubCommentDocument, "user">,
-        "rootid"
-      > & {
-        user: UserDocument;
-        rootid: CommentDocument;
-      }; */
       const filteredSubCommentsUser = await PromiseBl.map(
         filteredSubComments,
         async (item) => {
@@ -196,10 +189,6 @@ function startServer(usernames:string[]): void {
           return newSubComment;
         }
       );
-/*       type CommentPopulated = Omit<
-        Omit<CommentDocument, "subComments">,
-        "user"
-      > & { subComments: SubCommentWithUser[]; user: UserDocument }; */
       const commentDocPopulated = {
         ...commentDoc._data,
         user: user._data,
@@ -213,21 +202,17 @@ function startServer(usernames:string[]): void {
       response.send({ comment: null, totalNumber: 0 });
     }
   });
-  app.use("/", express.static(path.resolve(__dirname, "../../", "frontend","build")));
+  app.use("/", express.static(path.resolve(__dirname, "../../", "frontend", "build")));
 
   getPort({ port: [port, port + 1, port + 2] }).then((res: number) => {
     const availblePort: number = res;
     app.listen(availblePort || 5000, () => {
       console.log(`listening on port ${availblePort || 5000} \n`);
-      console.log(`open http://localhost:${availblePort}`);
-      let chromePath = "";
+      console.log(`opening http://localhost:${availblePort}`);
       try {
-        chromePath = ChromeLauncher.Launcher.getFirstInstallation();
-      } catch (err) {
-        console.log(err);
-      }
-      if(chromePath!==''){
         open(`http://localhost:${availblePort}`);
+      } catch (err) {
+        console.log(err, `Failed to open http://localhost:${availblePort}, please open it on your browser`)
       }
     });
   });
