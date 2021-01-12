@@ -15,7 +15,6 @@ import { Promise as PromiseBl } from "bluebird";
 import _ from "lodash";
 import path from "path";
 import getPort from "get-port";
-const ChromeLauncher = require("chrome-launcher");
 
 const open = require("open");
 function startServer(usernames: string[]): void {
