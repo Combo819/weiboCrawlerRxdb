@@ -28,17 +28,17 @@ export default class TimeWindow{
     }
     private increase():void{
         this.processingItems=this.processingItems+1;
-        console.log('q increase',this.processingItems,this.maxItems)
+        console.log('queue increases',this.processingItems,this.maxItems)
         if(this.processingItems>this.maxItems){
-            console.log('q pause')
+            console.log('API requesting pauses')
             this.q.pause();
         }
     }
     private decrease():void{
         this.processingItems = this.processingItems-1;
-        console.log('q decrease',this.processingItems,this.maxItems)
+        console.log('queue decreases',this.processingItems,this.maxItems)
         if(this.processingItems<=this.maxItems){
-            console.log('q resume')
+            console.log('API requesting resumes')
             this.q.resume();
         }
     }

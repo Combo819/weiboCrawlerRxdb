@@ -20,7 +20,7 @@ class Listener {
   private traverseListeners(): void {
     this.listeners.forEach((userId: string) => {
       // if the this.messageId[userId] string[] is not created, push all messageId to it and do nothing.
-      console.log(this.listeners,this.messageId);
+      console.log("listeners[]","messages IDs of each listener",this.listeners,this.messageId);
       if (!this.messageId[userId]) {
         this.messageId[userId] = [];
         getMessage({ count: 10, uid: userId }).then((res) => {  
