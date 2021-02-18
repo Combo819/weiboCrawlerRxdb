@@ -71,7 +71,7 @@ function startServer(usernames: string[]): void {
 
             return {
               ...item._data,
-              user: userPopulated._data,
+              user: userPopulated?._data,
             };
           }
         );
@@ -211,7 +211,7 @@ function startServer(usernames: string[]): void {
       try {
         open(`http://localhost:${availblePort}`);
       } catch (err) {
-        console.log(err, `Failed to open http://localhost:${availblePort}, please open it on your browser`)
+        console.log(`Failed to open http://localhost:${availblePort}, please open it on your browser`)
       }
     });
   });

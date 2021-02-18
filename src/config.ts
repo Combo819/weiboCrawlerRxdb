@@ -6,7 +6,7 @@ const Q_CONCURRENCY: number = 1;
 
 const staticPath = path.resolve(process.cwd(), "./storage", "static");
 
-if (!fs.existsSync(path)) {
+if (!fs.existsSync(staticPath)) {
   console.log("creating folder " + staticPath);
   fs.mkdirSync(staticPath, { recursive: true });
 }

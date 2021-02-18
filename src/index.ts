@@ -14,7 +14,7 @@ getCredentialFile()
       console.warn('The cookie is invalid or expired');
       process.exit(1);
     }).catch(err => {
-      if (err.response.status === 404) {
+      if (err.response?.status === 404) {
         connectDB().then(async (db) => {
           let userIds: string[] = [];
           let usernames: string[] = [];
