@@ -28,7 +28,7 @@ export default class TimeWindow{
     }
     private increase():void{
         this.processingItems=this.processingItems+1;
-        console.log('queue increases',this.processingItems,this.maxItems)
+        console.log(`API requests queue increases: proceeded ${this.processingItems} API requests in time window. allow up to ${this.maxItems} items in time window `);
         if(this.processingItems>this.maxItems){
             console.log('API requesting pauses')
             this.q.pause();
@@ -36,7 +36,7 @@ export default class TimeWindow{
     }
     private decrease():void{
         this.processingItems = this.processingItems-1;
-        console.log('queue decreases',this.processingItems,this.maxItems)
+        console.log(`API requests queue decreases: proceeded ${this.processingItems} API requests in time window. allow up to ${this.maxItems} items in time window `);
         if(this.processingItems<=this.maxItems){
             console.log('API requesting resumes')
             this.q.resume();

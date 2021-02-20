@@ -70,8 +70,8 @@ function startServer(usernames: string[]): void {
             const userPopulated = await item.populate("user");
 
             return {
-              ...item._data,
-              user: userPopulated?._data,
+              ...item.toJSON(),
+              user: userPopulated?.toJSON(),
             };
           }
         );
@@ -104,12 +104,12 @@ function startServer(usernames: string[]): void {
         filteredComments,
         async (item) => {
           const userDoc: UserDocument = await item.populate("user");
-          return { ...item._data, user: userDoc._data };
+          return { ...item.toJSON(), user: userDoc.toJSON() };
         }
       );
       const populatedWeiboDoc = {
-        ...weiboDoc._data,
-        user: userDoc._data,
+        ...weiboDoc.toJSON(),
+        user: userDoc.toJSON(),
         comments: filteredCommentsWithUser,
       };
       response.send({ weibo: populatedWeiboDoc, totalNumber: comments.length });
@@ -142,7 +142,7 @@ function startServer(usernames: string[]): void {
         filteredComments,
         async (item) => {
           const userDoc: UserDocument = await item.populate("user");
-          return { ...item._data, user: userDoc._data };
+          return { ...item.toJSON(), user: userDoc.toJSON() };
         }
       );
       response.send({
@@ -181,16 +181,16 @@ function startServer(usernames: string[]): void {
           const userDoc: UserDocument = await item.populate("user");
           const commentDoc: CommentDocument = await item.populate("rootid");
           const newSubComment = {
-            ...item._data,
-            user: userDoc._data,
-            rootid: commentDoc._data,
+            ...item.toJSON(),
+            user: userDoc.toJSON(),
+            rootid: commentDoc.toJSON(),
           };
           return newSubComment;
         }
       );
       const commentDocPopulated = {
-        ...commentDoc._data,
-        user: user._data,
+        ...commentDoc.toJSON(),
+        user: user.toJSON(),
         subComments: filteredSubCommentsUser,
       };
       response.send({
