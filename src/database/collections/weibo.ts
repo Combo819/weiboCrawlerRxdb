@@ -21,7 +21,8 @@ export type IWeibo = {
   comments: string[];
   pics?: any[];
   pageInfo?: any;
-  saveTime:number;
+  saveTime: number;
+  repostingId: string
 };
 
 export const weiboSchema: RxJsonSchema<IWeibo> = {
@@ -45,7 +46,8 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
     comments: { type: "array", ref: "comment", items: { type: "string" } },
     pics: { type: "array" },
     pageInfo: { type: "object" },
-    saveTime:{type:'number'}
+    saveTime: { type: 'number' },
+    repostingId: { type: "string" }
   },
   required: [
     "_id",
@@ -53,7 +55,6 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
     "mid",
     "createdAt",
     "text",
-    "textLength",
     "picIds",
     "repostsCount",
     "isLongText",
@@ -71,6 +72,6 @@ export type WeiboCollectionMethods = {
 
 export type WeiboDocument = RxDocument<IWeibo>;
 
-type WeiboCollection = RxCollection<IWeibo,any,WeiboCollectionMethods>;
+type WeiboCollection = RxCollection<IWeibo, any, WeiboCollectionMethods>;
 
 export default WeiboCollection;

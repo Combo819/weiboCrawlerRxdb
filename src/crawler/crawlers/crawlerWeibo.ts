@@ -12,8 +12,7 @@ import downloadImage from "../downloader/image";
 import downloadVideo from "../downloader/video";
 import { staticPath } from "../../config";
 import { q } from "../queue";
-import { retry } from "async";
-import { stringify } from "querystring";
+import {startCrawler} from '../crawler'
 
 async function crawlerWeibo(weiboId: string): Promise<WeiboDocument|null> {
   let weiboDoc: WeiboDocument | null;
@@ -31,8 +30,10 @@ async function crawlerWeibo(weiboId: string): Promise<WeiboDocument|null> {
     const renderData = Function(renderText + " return $render_data")();
     const status = camelcaseKeys(renderData.status, { deep: true });
    
-    const resDoc: WeiboDocument | null = await saveWeibo(status.retweetedStatus||status);
-    
+    const resDoc: WeiboDocument | null = await saveWeibo(status);
+    if(status.retweetedStatus){
+      startCrawler(status.retweetedStatus.id);
+    }
     saveUser(status.user);
     weiboDoc = resDoc;
     return weiboDoc
@@ -71,6 +72,7 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       user: { id: userId },
       pics,
       pageInfo,
+      repostingId
     } = status;
     if (!database) {
       return reject("database is not created");
@@ -93,6 +95,7 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       comments: [],
       pageInfo,
       saveTime:Date.now(),
+      repostingId
     }; 
     try {
       
