@@ -7,11 +7,10 @@ import {
   CommentDocument,
   CommentCollection,
   SubCommentDocument,
-  IWeibo,
-  IUser,
+
 } from "../database/collections";
-import { port, credentialJsonPath, staticPath } from "../config";
-import express,{Application,Request,Response} from "express";
+import { port, staticPath } from "../config";
+import express, { Application, Request, response, Response } from "express";
 
 import { database } from "../database/connect";
 import { Promise as PromiseBl } from "bluebird";
@@ -26,7 +25,7 @@ function startServer(usernames: string[]): void {
     message?: any;
   }
 
-  const app:Application = express();
+  const app: Application = express();
 
   app.use(express.urlencoded());
   app.use(express.json());
@@ -34,7 +33,8 @@ function startServer(usernames: string[]): void {
 
   app.use(express.static(staticPath));
 
-  app.post("/api/save", (request:Request, response:Response) => {
+  //save a weibo
+  app.post("/api/save", (request: Request, response: Response) => {
     const { weiboId }: { weiboId: string } = request.body;
     console.log(weiboId, "weiboId");
     startCrawler(weiboId)
@@ -48,15 +48,18 @@ function startServer(usernames: string[]): void {
       });
   });
 
-  app.get('/api/monitor', (request, response) => {
+  //get the username list that you're monitoring
+  app.get('/api/monitor', (request:Request, response:Response) => {
     response.send({ users: usernames });
   })
 
-  app.get("/api/weibos", (request, response) => {
+  //get a list of weibos
+  app.get("/api/weibos", (request:Request, response:Response) => {
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
     if (!database) {
       console.log("database is not created");
+      response.status(400).send("Database is not created")
       return;
     }
     const weiboCollection: WeiboCollection = database.weibo;
@@ -88,12 +91,12 @@ function startServer(usernames: string[]): void {
       });
   });
 
-  app.get("/api/weibo/:weiboId", async (request, response) => {
+  //get weibo content by a given weiboId
+  app.get("/api/weibo/:weiboId", async (request:Request, response:Response) => {
     const { weiboId } = request.params;
-    const page: string = (request.query.page || 0) as string;
-    const pageSize: string = (request.query.pageSize || 10) as string;
     if (!database) {
       console.log("database is not created");
+      response.status(400).send("Database is not created")
       return;
     }
     const weiboCollection: WeiboCollection = database.weibo;
@@ -106,37 +109,26 @@ function startServer(usernames: string[]): void {
       let repostingUser: UserDocument | undefined;
       if (reposting) {
         repostingUser = await reposting.populate('user');
-      }
-      const comments: CommentDocument[] = await weiboDoc.populate("comments");
-      const filteredComments: CommentDocument[] = _.chain(comments)
-        .drop(parseInt(page) * parseInt(pageSize))
-        .take(parseInt(pageSize))
-        .value();
-      const filteredCommentsWithUser = await PromiseBl.map(
-        filteredComments,
-        async (item) => {
-          const userDoc: UserDocument = await item.populate("user");
-          return { ...item.toJSON(), user: userDoc.toJSON() };
-        }
-      );
+      };
       const populatedWeiboDoc = {
         ...weiboDoc.toJSON(),
         user: userDoc.toJSON(),
-        comments: filteredCommentsWithUser,
         reposting: { ...reposting?.toJSON(), user: repostingUser?.toJSON() }
       };
-      response.send({ weibo: populatedWeiboDoc, totalNumber: comments.length });
+      response.send({ weibo: populatedWeiboDoc, totalNumber: 1 });
     } else {
       response.send({ weibo: null, totalNumber: 0 });
     }
   });
 
-  app.get("/api/comments/:weiboId", async (request, response) => {
+  //get comments list by a given weiboId
+  app.get("/api/comments/:weiboId", async (request:Request, response:Response) => {
     const { weiboId } = request.params;
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
     if (!database) {
       console.log("database is not created");
+      response.status(400).send("Database is not created")
       return;
     }
     const weiboCollection: WeiboCollection = database.weibo;
@@ -144,9 +136,7 @@ function startServer(usernames: string[]): void {
       .findOne(weiboId)
       .exec();
     if (weiboDoc) {
-      const user = await weiboDoc.populate("user");
       const comments: CommentDocument[] = await weiboDoc.populate("comments");
-      const userDoc: UserDocument = user;
       const filteredComments: CommentDocument[] = _.chain(comments)
         .drop(parseInt(page) * parseInt(pageSize))
         .take(parseInt(pageSize))
@@ -163,16 +153,18 @@ function startServer(usernames: string[]): void {
         totalNumber: comments.length,
       });
     } else {
-      response.send({ weibo: null, totalNumber: 0 });
+      response.send({ comments: null, totalNumber: 0 });
     }
   });
 
-  app.get("/api/comment/:commentId", async (request, response) => {
+  // get comment content by a given comment
+  app.get("/api/comment/:commentId", async (request:Request, response:Response) => {
     const { commentId } = request.params;
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
     if (!database) {
       console.log("database is not created");
+      response.status(400).send("Database is not created")
       return;
     }
     const commentCollection: CommentCollection = database.comment;
@@ -208,12 +200,58 @@ function startServer(usernames: string[]): void {
       };
       response.send({
         comment: commentDocPopulated,
-        totalNumber: subComments.length,
+        totalNumber: 1,
       });
     } else {
       response.send({ comment: null, totalNumber: 0 });
     }
   });
+
+  //get subComments list by a given commentId
+  app.get('/api/subComment/:commentId', async (request:Request, response:Response) => {
+    const { commentId } = request.params;
+    const page: string = (request.query.page || 0) as string;
+    const pageSize: string = (request.query.pageSize || 10) as string;
+    if (!database) {
+      console.log("database is not created");
+      response.status(400).send("Database is not created")
+      return;
+    }
+    const commentCollection: CommentCollection = database.comment;
+    const commentDoc: CommentDocument | null = await commentCollection
+      .findOne(commentId)
+      .exec();
+    if (commentDoc) {
+      const subComments: SubCommentDocument[] = await commentDoc.populate(
+        "subComments"
+      );
+      const filteredSubComments: SubCommentDocument[] = _.chain(subComments)
+        .drop(parseInt(page) * parseInt(pageSize))
+        .take(parseInt(pageSize))
+        .value();
+      const filteredSubCommentsUser = await PromiseBl.map(
+        filteredSubComments,
+        async (item) => {
+          const userDoc: UserDocument = await item.populate("user");
+          const commentDoc: CommentDocument = await item.populate("rootid");
+          const newSubComment = {
+            ...item.toJSON(),
+            user: userDoc.toJSON(),
+            rootid: commentDoc.toJSON(),
+          };
+          return newSubComment;
+        }
+      );
+      response.send({
+        subComments: filteredSubCommentsUser,
+        totalNumber: subComments.length,
+      });
+    } else {
+      response.send({ subComments: null, totalNumber: 0 });
+    }
+  });
+
+
   app.use("/", express.static(path.resolve(__dirname, "../../", "frontend", "build")));
 
   getPort({ port: [port, port + 1, port + 2] }).then((res: number) => {
