@@ -1,3 +1,4 @@
+
 import { startCrawler } from "../crawler";
 import {
   WeiboCollection,
@@ -6,6 +7,8 @@ import {
   CommentDocument,
   CommentCollection,
   SubCommentDocument,
+  IWeibo,
+  IUser,
 } from "../database/collections";
 import { port, credentialJsonPath, staticPath } from "../config";
 import express from "express";
@@ -64,14 +67,15 @@ function startServer(usernames: string[]): void {
       .skip(parseInt(pageSize) * parseInt(page))
       .exec()
       .then(async (weiboDocs: WeiboDocument[]) => {
-        const weibosPopulated: any = await PromiseBl.map(
+        const weibosPopulated = await PromiseBl.map(
           weiboDocs,
-          async (item) => {
-            const userPopulated = await item.populate("user");
-
+          async (item:WeiboDocument) => {
+            const userPopulated:UserDocument = await item.populate("user");
+            const reposting:WeiboDocument = await item.populate('repostingId');
             return {
               ...item.toJSON(),
               user: userPopulated?.toJSON(),
+              reposting:reposting?.toJSON(),
             };
           }
         );
@@ -93,9 +97,9 @@ function startServer(usernames: string[]): void {
       .findOne(weiboId)
       .exec();
     if (weiboDoc) {
-      const user = await weiboDoc.populate("user");
+      const userDoc:UserDocument = await weiboDoc.populate("user");
+      const reposting:WeiboDocument = await weiboDoc.populate("repostingId");
       const comments: CommentDocument[] = await weiboDoc.populate("comments");
-      const userDoc: UserDocument = user;
       const filteredComments: CommentDocument[] = _.chain(comments)
         .drop(parseInt(page) * parseInt(pageSize))
         .take(parseInt(pageSize))
@@ -111,6 +115,7 @@ function startServer(usernames: string[]): void {
         ...weiboDoc.toJSON(),
         user: userDoc.toJSON(),
         comments: filteredCommentsWithUser,
+        reposting:reposting?.toJSON()
       };
       response.send({ weibo: populatedWeiboDoc, totalNumber: comments.length });
     } else {

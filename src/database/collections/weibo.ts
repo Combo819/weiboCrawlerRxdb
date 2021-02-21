@@ -47,7 +47,7 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
     pics: { type: "array" },
     pageInfo: { type: "object" },
     saveTime: { type: 'number' },
-    repostingId: { type: "string" }
+    repostingId: { type: "string", ref: 'weibo' }
   },
   required: [
     "_id",

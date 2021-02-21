@@ -72,7 +72,7 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       user: { id: userId },
       pics,
       pageInfo,
-      repostingId
+      retweetedStatus
     } = status;
     if (!database) {
       return reject("database is not created");
@@ -95,7 +95,7 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       comments: [],
       pageInfo,
       saveTime:Date.now(),
-      repostingId
+      repostingId:retweetedStatus?.id
     }; 
     try {
       
