@@ -11,7 +11,7 @@ import {
   IUser,
 } from "../database/collections";
 import { port, credentialJsonPath, staticPath } from "../config";
-import express from "express";
+import express,{Application,Request,Response} from "express";
 
 import { database } from "../database/connect";
 import { Promise as PromiseBl } from "bluebird";
@@ -26,7 +26,7 @@ function startServer(usernames: string[]): void {
     message?: any;
   }
 
-  const app = express();
+  const app:Application = express();
 
   app.use(express.urlencoded());
   app.use(express.json());
@@ -34,7 +34,7 @@ function startServer(usernames: string[]): void {
 
   app.use(express.static(staticPath));
 
-  app.post("/api/save", (request, response) => {
+  app.post("/api/save", (request:Request, response:Response) => {
     const { weiboId }: { weiboId: string } = request.body;
     console.log(weiboId, "weiboId");
     startCrawler(weiboId)

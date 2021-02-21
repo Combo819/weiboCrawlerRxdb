@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { Col, Row, List, Avatar, Pagination } from "antd";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { getSingleCommentApi } from "../../Api";
@@ -13,6 +13,7 @@ export default function CommentList(props: React.Props<any>) {
     return { page: query.get("page"), pageSize: query.get("pageSize") };
   }
 
+  let listRef = useRef<any>(null);
   const history = useHistory();
   const { pathname } = useLocation();
   const { commentId } = useParams<{commentId:string}>();
@@ -56,11 +57,14 @@ export default function CommentList(props: React.Props<any>) {
       pathname: `${pathname}`,
       search: `?page=${newPage}&pageSize=${pageSize}`,
     });
+   if(listRef&&listRef.current){
+    listRef.current.scrollIntoView();
+   } 
   };
   return (
     <>
       <Row justify="center">
-        <Col style={{ width: 600 }}>
+        <Col ref={listRef} style={{ width: 600 }}>
           <List<SubComment>
             style={{ backgroundColor: "white" }}
             bordered

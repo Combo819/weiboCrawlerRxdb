@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { Col, Row, Pagination,Empty } from "antd";
 import { WeiboCard } from "../../Component/WeiboCard";
 import { getWeibosApi } from "../../Api";
@@ -6,6 +6,7 @@ import { useLocation,useHistory } from "react-router-dom";
 import { Weibo as WeiboType } from "../../types";
 
 function Weibo(Props: React.Props<any>) {
+  let listRef = useRef<any>(null)
   function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
@@ -37,7 +38,7 @@ function Weibo(Props: React.Props<any>) {
   return (
     <>
       <Row justify="center" align="middle">
-        <Col  xs={24} sm={20} md={12} lg={12} xl={8}> 
+        <Col ref={listRef}  xs={24} sm={20} md={12} lg={12} xl={8}> 
           {weibos.length>0?weibos.map((item: any) => {
             return (
               <Row className={"mt-3"} key={item.id}>
