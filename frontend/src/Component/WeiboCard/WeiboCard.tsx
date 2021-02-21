@@ -9,10 +9,8 @@ import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import "react-photo-view/dist/index.css";
 import { useHistory } from "react-router-dom";
 import { getVideoUrl, getImageUrl } from "../../Utility/parseUrl";
-import {Weibo} from '../../types'
-
-
-
+import { Weibo } from "../../types";
+import RepostCard from "../RepostCard/RepostCard";
 
 type CardProps = {
   weibo: Weibo;
@@ -66,9 +64,15 @@ export default function WeiboCard(props: CardProps) {
             src={weibo && weibo.user && getImageUrl(weibo.user.avatarHd)}
           />
         }
-        title={`@${weibo && weibo.user && weibo.user.screenName}`}
+        title={<a target='_blank' href={`https://m.weibo.cn/u/${weibo?.user?.id}`}>{`@${weibo && weibo.user && weibo.user.screenName}`}</a>  }
         description={HtmlParser(weibo && weibo.text)}
       />
+      {weibo?.repostingId && (
+        <RepostCard
+          loading={loading || false}
+          repostedWeibo={weibo?.reposting as Weibo}
+        />
+      )}
       {weibo && weibo.pics && (
         <Row justify="center" align="middle">
           <Col>

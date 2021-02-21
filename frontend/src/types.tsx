@@ -59,6 +59,7 @@ type Weibo = {
   pageInfo?: any;
   saveTime: number;
   repostingId: string;
+  reposting?:Weibo;
 };
 
 export type { Weibo, User, SubComment, Comment };

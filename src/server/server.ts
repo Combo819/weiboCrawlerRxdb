@@ -69,13 +69,17 @@ function startServer(usernames: string[]): void {
       .then(async (weiboDocs: WeiboDocument[]) => {
         const weibosPopulated = await PromiseBl.map(
           weiboDocs,
-          async (item:WeiboDocument) => {
-            const userPopulated:UserDocument = await item.populate("user");
-            const reposting:WeiboDocument = await item.populate('repostingId');
+          async (item: WeiboDocument) => {
+            const userPopulated: UserDocument = await item.populate("user");
+            const reposting: WeiboDocument = await item.populate('repostingId');
+            let repostingUser: UserDocument | undefined;
+            if (reposting) {
+              repostingUser = await reposting.populate('user');
+            }
             return {
               ...item.toJSON(),
               user: userPopulated?.toJSON(),
-              reposting:reposting?.toJSON(),
+              reposting: { ...reposting?.toJSON(), user: repostingUser?.toJSON() },
             };
           }
         );
@@ -97,8 +101,12 @@ function startServer(usernames: string[]): void {
       .findOne(weiboId)
       .exec();
     if (weiboDoc) {
-      const userDoc:UserDocument = await weiboDoc.populate("user");
-      const reposting:WeiboDocument = await weiboDoc.populate("repostingId");
+      const userDoc: UserDocument = await weiboDoc.populate("user");
+      const reposting: WeiboDocument = await weiboDoc.populate("repostingId");
+      let repostingUser: UserDocument | undefined;
+      if (reposting) {
+        repostingUser = await reposting.populate('user');
+      }
       const comments: CommentDocument[] = await weiboDoc.populate("comments");
       const filteredComments: CommentDocument[] = _.chain(comments)
         .drop(parseInt(page) * parseInt(pageSize))
@@ -115,7 +123,7 @@ function startServer(usernames: string[]): void {
         ...weiboDoc.toJSON(),
         user: userDoc.toJSON(),
         comments: filteredCommentsWithUser,
-        reposting:reposting?.toJSON()
+        reposting: { ...reposting?.toJSON(), user: repostingUser?.toJSON() }
       };
       response.send({ weibo: populatedWeiboDoc, totalNumber: comments.length });
     } else {
