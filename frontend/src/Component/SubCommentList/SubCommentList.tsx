@@ -4,7 +4,9 @@ import { useParams, useLocation, useHistory } from "react-router-dom";
 import { getSingleCommentApi } from "../../Api";
 import HtmlParser from "react-html-parser";
 import { LikeOutlined } from "@ant-design/icons";
-import {getImageUrl} from '../../Utility/parseUrl'
+import {getImageUrl} from '../../Utility/parseUrl';
+import {SubComment,Comment} from '../../types';
+
 export default function CommentList(props: React.Props<any>) {
   function useQuery() {
     const query = new URLSearchParams(useLocation().search);
@@ -13,9 +15,9 @@ export default function CommentList(props: React.Props<any>) {
 
   const history = useHistory();
   const { pathname } = useLocation();
-  const { commentId } = useParams();
+  const { commentId } = useParams<{commentId:string}>();
   const { page: urlPage, pageSize: urlPageSize } = useQuery();
-  const [comment, setComment] = useState({subComments:[]});
+  const [comment, setComment] = useState<Comment>({subComments: []} as any);
   const [totalNumber, setTotalNumber] = useState(0);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(urlPage);
@@ -59,13 +61,13 @@ export default function CommentList(props: React.Props<any>) {
     <>
       <Row justify="center">
         <Col style={{ width: 600 }}>
-          <List
+          <List<SubComment>
             style={{ backgroundColor: "white" }}
             bordered
             split
             loading={loading}
             itemLayout="horizontal"
-            dataSource={(comment&&comment.subComments)||[]}
+            dataSource={((comment&&comment.subComments)||[]) as SubComment[]}
             renderItem={(item: any) => (
               <List.Item
                 actions={[

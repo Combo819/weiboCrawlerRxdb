@@ -3,6 +3,7 @@ import { Col, Row, Pagination,Empty } from "antd";
 import { WeiboCard } from "../../Component/WeiboCard";
 import { getWeibosApi } from "../../Api";
 import { useLocation,useHistory } from "react-router-dom";
+import { Weibo as WeiboType } from "../../types";
 
 function Weibo(Props: React.Props<any>) {
   function useQuery() {
@@ -10,14 +11,14 @@ function Weibo(Props: React.Props<any>) {
   }
   const history = useHistory();
   const query = useQuery();
-  const [weibos, setWeibos] = useState([]);
+  const [weibos, setWeibos] = useState<WeiboType[]>([]);
   const [page, setPage] = useState(query.get("page"));
   const [pageSize, setPageSize] = useState(query.get("pageSize"));
   const [totalNumber,setTotalNumber] = useState(0);
   useEffect(() => {
     getWeibosApi(parseInt(page || "1"), parseInt(pageSize || "10"))
       .then((res) => {
-        const { weibo,totalNumber }: { weibo: any; totalNumber: number } = res.data;
+        const { weibo,totalNumber } = res.data;
         setWeibos(weibo);
         setTotalNumber(totalNumber);
       })

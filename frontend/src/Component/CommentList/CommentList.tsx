@@ -7,6 +7,7 @@ import { LikeOutlined, PictureOutlined } from "@ant-design/icons";
 import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import "react-photo-view/dist/index.css";
 import { getImageUrl } from "../../Utility/parseUrl";
+import {Comment} from '../../types'
 export default function CommentList(props: React.Props<any>) {
   function useQuery() {
     const query = new URLSearchParams(useLocation().search);
@@ -15,9 +16,9 @@ export default function CommentList(props: React.Props<any>) {
 
   const history = useHistory();
   const { pathname } = useLocation();
-  const { weiboId } = useParams();
+  const { weiboId } = useParams<{weiboId:string}>();
   const { page: urlPage, pageSize: urlPageSize } = useQuery();
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [totalNumber, setTotalNumber] = useState(0);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(urlPage);

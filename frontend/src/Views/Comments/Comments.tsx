@@ -4,6 +4,7 @@ import { WeiboCard } from "../../Component/WeiboCard";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { getSingleWeiboApi } from "../../Api";
 import { CommentList } from "../../Component/CommentList";
+import { Weibo } from "../../types";
 function Comments(props: React.Props<any>) {
   function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -13,9 +14,9 @@ function Comments(props: React.Props<any>) {
   }
   const history = useHistory();
   console.log(useLocation(), "useLocation().state");
-  const { weiboId } = useParams();
+  const { weiboId } = useParams<{weiboId:string}>();
   const query = useQuery();
-  const [weibo, setWeibo] = useState({ comments: [] });
+  const [weibo, setWeibo] = useState<Weibo>({ comments: [] } as any);
   const [loading, setLoading] = useState(false);
   const { page: backPage, pageSize: backPageSize } = usePushState() as any;
 
