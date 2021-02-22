@@ -1,13 +1,14 @@
 import React, { useEffect, useState,useRef } from "react";
 import { Col, Row, List, Avatar, Pagination } from "antd";
 import { useParams, useLocation, useHistory } from "react-router-dom";
-import { getSingleCommentApi } from "../../Api";
+import { getSubCommentsApi } from "../../Api";
 import HtmlParser from "react-html-parser";
 import { LikeOutlined } from "@ant-design/icons";
 import {getImageUrl} from '../../Utility/parseUrl';
-import {SubComment,Comment} from '../../types';
+import {SubComment} from '../../types';
 
 export default function CommentList(props: React.Props<any>) {
+  console.log('enter commentList')
   function useQuery() {
     const query = new URLSearchParams(useLocation().search);
     return { page: query.get("page"), pageSize: query.get("pageSize") };
@@ -18,7 +19,7 @@ export default function CommentList(props: React.Props<any>) {
   const { pathname } = useLocation();
   const { commentId } = useParams<{commentId:string}>();
   const { page: urlPage, pageSize: urlPageSize } = useQuery();
-  const [comment, setComment] = useState<Comment>({subComments: []} as any);
+  const [subComments, setSubComments] = useState<SubComment[]>([]);
   const [totalNumber, setTotalNumber] = useState(0);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(urlPage);
@@ -26,14 +27,14 @@ export default function CommentList(props: React.Props<any>) {
 
   useEffect(() => {
     setLoading(true);
-    getSingleCommentApi(
+    getSubCommentsApi(
       commentId,
       parseInt(page || "1"),
       parseInt(pageSize || "10")
     )
       .then((res) => {
-        const { comment, totalNumber } = res.data;
-        setComment(comment);
+        const { subComments, totalNumber } = res.data;
+        setSubComments(subComments);
         setTotalNumber(totalNumber);
         setLoading(false);
       })
@@ -71,7 +72,7 @@ export default function CommentList(props: React.Props<any>) {
             split
             loading={loading}
             itemLayout="horizontal"
-            dataSource={((comment&&comment.subComments)||[]) as SubComment[]}
+            dataSource={(subComments||[]) as SubComment[]}
             renderItem={(item: any) => (
               <List.Item
                 actions={[
@@ -87,7 +88,7 @@ export default function CommentList(props: React.Props<any>) {
                 <List.Item.Meta
                   avatar={<Avatar src={item.user && getImageUrl(item.user.avatarHd) } />}
                   title={
-                    <a target="_blank" href={item.user.profileUrl}>{`@${
+                    <a target="_blank" href={item?.user?.profileUrl}>{`@${
                       item.user && item.user.screenName
                     }`}</a>
                   }

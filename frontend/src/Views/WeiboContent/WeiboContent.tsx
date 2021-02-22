@@ -20,7 +20,7 @@ function WeiboContent(props: React.Props<any>) {
   const query = useQuery();
   const [weibo, setWeibo] = useState<Weibo>({ comments: [] } as any);
   const [loading, setLoading] = useState(false);
-  const { page: backPage, pageSize: backPageSize } = usePushState() as any;
+  const { page: backPage=1, pageSize: backPageSize=10 } = usePushState() as any;
 
   useEffect(() => {
     setLoading(true);

@@ -59,7 +59,7 @@ export default function CommentList(props: React.Props<any>) {
   };
   const toSubComments = (commentId: string) => {
     history.push({
-      pathname: `/subComments/${commentId}`,
+      pathname: `/comment/${commentId}`,
       search: `?page=1&pageSize=10`,
       state: { page, pageSize },
     });
@@ -118,7 +118,7 @@ export default function CommentList(props: React.Props<any>) {
                 <List.Item.Meta
                   avatar={<Avatar src={item.user && getImageUrl(item.user.avatarHd)} />}
                   title={
-                    <a target="_blank" href={item.user.profileUrl}>{`@${item.user && item.user.screenName
+                    <a target="_blank" href={item?.user?.profileUrl}>{`@${item.user && item.user.screenName
                       }`}</a>
                   }
                   description={HtmlParser(item.text)}
