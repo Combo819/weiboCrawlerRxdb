@@ -5,7 +5,7 @@ import { getWeibosApi } from "../../Api";
 import { useLocation,useHistory } from "react-router-dom";
 import { Weibo as WeiboType } from "../../types";
 
-function Weibo(Props: React.Props<any>) {
+function WeiboList(Props: React.Props<any>) {
   let listRef = useRef<any>(null)
   function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -70,4 +70,4 @@ function Weibo(Props: React.Props<any>) {
   );
 }
 
-export default Weibo;
+export default WeiboList;

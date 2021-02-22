@@ -6,7 +6,7 @@ import { getSingleCommentApi } from "../../Api";
 import {SubCommentList} from '../../Component/SubCommentList'
 import HtmlParser from "react-html-parser";
 import { getImageUrl } from "../../Utility/parseUrl";
-function SubComments(props: React.Props<any>) {
+function CommentContent(props: React.Props<any>) {
   function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
@@ -15,7 +15,7 @@ function SubComments(props: React.Props<any>) {
   }
   const history = useHistory();
   console.log(useLocation(), "useLocation().state");
-  const { commentId } = useParams();
+  const { commentId } = useParams<{commentId:string}>();
   const query = useQuery();
   const [comment, SetComment] = useState({
     likeCount: 0,
@@ -91,4 +91,4 @@ function SubComments(props: React.Props<any>) {
   );
 }
 
-export default SubComments;
+export default CommentContent;

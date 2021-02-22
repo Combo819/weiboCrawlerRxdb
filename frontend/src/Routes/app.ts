@@ -1,7 +1,7 @@
 import { FunctionComponent, ComponentClass } from "react";
-import { Weibo } from "../Views/Weibo";
-import { Comments } from "../Views/Comments";
-import { SubComments } from "../Views/SubComments";
+import { WeiboList } from "../Views/WeiboList";
+import { WeiboContent } from "../Views/WeiboContent";
+import { CommentContent } from "../Views/CommentContent";
 
 export interface Route {
   path: string;
@@ -10,11 +10,11 @@ export interface Route {
 }
 
 const routes: Route[] = [
-  { path: "/comments/:weiboId", component: Comments },
-  { path: "/subComments/:commentId", component: SubComments },
+  { path: "/weibo/:weiboId", component: WeiboContent },
+  { path: "/comment/:commentId", component: CommentContent },
   {
     path: "/",
-    component: Weibo,
+    component: WeiboList,
     exact: true,
   },
 ];

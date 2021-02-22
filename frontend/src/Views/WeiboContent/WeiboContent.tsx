@@ -5,7 +5,7 @@ import { useParams, useLocation, useHistory } from "react-router-dom";
 import { getSingleWeiboApi } from "../../Api";
 import { CommentList } from "../../Component/CommentList";
 import { Weibo } from "../../types";
-function Comments(props: React.Props<any>) {
+function WeiboContent(props: React.Props<any>) {
   function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
@@ -66,4 +66,4 @@ function Comments(props: React.Props<any>) {
   );
 }
 
-export default Comments;
+export default WeiboContent;
