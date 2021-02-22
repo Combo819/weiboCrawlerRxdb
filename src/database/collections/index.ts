@@ -1,11 +1,14 @@
-import CommentCollection, { commentSchema, CommentDocument,IComment } from "./comment";
+import CommentCollection, { commentSchema, CommentDocument, IComment } from "./comment";
 import SubCommentCollection, {
   subCommentSchema,
-  SubCommentDocument,ISubComment
+  SubCommentDocument, ISubComment
 } from "./subComment";
-import UserCollection, { UserDocument, userSchema,IUser } from "./user";
-import WeiboCollection, { WeiboDocument, weiboSchema,IWeibo,WeiboCollectionMethods } from "./weibo";
-
+import UserCollection, { UserDocument, userSchema, IUser } from "./user";
+import WeiboCollection, { WeiboDocument, weiboSchema, IWeibo, WeiboCollectionMethods } from "./weibo";
+import RepostCommentCollection, {
+  repostCommentSchema,
+  IRepostComment,RepostCommentDocument
+} from './repostComment';
 export {
   CommentDocument,
   commentSchema,
@@ -18,5 +21,7 @@ export {
   CommentCollection,
   SubCommentCollection,
   UserCollection,
-  WeiboCollection,IWeibo,IUser,IComment,ISubComment,WeiboCollectionMethods
+  WeiboCollection, IWeibo, IUser, IComment, ISubComment, WeiboCollectionMethods,RepostCommentCollection,
+  repostCommentSchema,RepostCommentDocument,
+  IRepostComment
 };

@@ -6,22 +6,21 @@ import {
   weiboSchema,
   userSchema,
   commentSchema,
-  subCommentSchema,WeiboCollectionMethods
+  subCommentSchema, WeiboCollectionMethods, RepostCommentCollection,
+  repostCommentSchema,
+  IRepostComment
 } from "./collections";
 import {
   createRxDatabase,
   RxDatabase,
-  RxCollection,
-  RxJsonSchema,
-  RxDocument,
   addRxPlugin,
 } from "rxdb";
-import {rxdbPath} from '../config'
+import { rxdbPath } from '../config'
 
 const weiboCollectionMethods: WeiboCollectionMethods = {
-  countAllDocuments: async function(this: WeiboCollection) {
-      const allDocs = await this.find().exec();
-      return allDocs.length;
+  countAllDocuments: async function (this: WeiboCollection) {
+    const allDocs = await this.find().exec();
+    return allDocs.length;
   }
 };
 
@@ -30,6 +29,7 @@ type DataBaseCollections = {
   weibo: WeiboCollection;
   comment: CommentCollection;
   subcomment: SubCommentCollection;
+  repostComment:RepostCommentCollection
 };
 type DatabaseType = RxDatabase<DataBaseCollections>;
 addRxPlugin(require("pouchdb-adapter-leveldb"));
@@ -45,7 +45,7 @@ const connectDB = async () => {
     await database.collection({
       name: "weibo",
       schema: weiboSchema,
-      statics:weiboCollectionMethods
+      statics: weiboCollectionMethods
     });
     await database.collection({
       name: "user",
@@ -59,6 +59,10 @@ const connectDB = async () => {
       name: "subcomment",
       schema: subCommentSchema,
     });
+    await database.collection({
+      name:"repostComment",
+      schema:repostCommentSchema,
+    })
     return database;
   } catch (err) {
     console.error(err.message);
