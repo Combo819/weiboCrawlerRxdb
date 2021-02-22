@@ -28,7 +28,7 @@ export type IWeibo = {
 
 export const weiboSchema: RxJsonSchema<IWeibo> = {
   title: "weibo schema",
-  version: 0,
+  version: 1,
   description: "weibo schema",
   type: "object",
   properties: {

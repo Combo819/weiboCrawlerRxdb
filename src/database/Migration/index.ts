@@ -1,0 +1,1 @@
+export {weiboMigration} from './weibo'

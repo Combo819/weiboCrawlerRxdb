@@ -16,7 +16,7 @@ import {
   addRxPlugin,
 } from "rxdb";
 import { rxdbPath } from '../config'
-
+import {weiboMigration} from './Migration'
 const weiboCollectionMethods: WeiboCollectionMethods = {
   countAllDocuments: async function (this: WeiboCollection) {
     const allDocs = await this.find().exec();
@@ -45,7 +45,8 @@ const connectDB = async () => {
     database.addCollections({
       weibo: {
         schema: weiboSchema,
-        statics: weiboCollectionMethods
+        statics: weiboCollectionMethods,
+        migrationStrategies:weiboMigration,
       },
       user: { schema: userSchema },
       comment: { schema: commentSchema },
