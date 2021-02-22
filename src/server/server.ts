@@ -1,3 +1,4 @@
+import { RepostCommentDocument } from './../database/collections/repostComment';
 
 import { startCrawler } from "../crawler";
 import {
@@ -49,12 +50,12 @@ function startServer(usernames: string[]): void {
   });
 
   //get the username list that you're monitoring
-  app.get('/api/monitor', (request:Request, response:Response) => {
+  app.get('/api/monitor', (request: Request, response: Response) => {
     response.send({ users: usernames });
   })
 
   //get a list of weibos
-  app.get("/api/weibos", (request:Request, response:Response) => {
+  app.get("/api/weibos", (request: Request, response: Response) => {
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
     if (!database) {
@@ -92,7 +93,7 @@ function startServer(usernames: string[]): void {
   });
 
   //get weibo content by a given weiboId
-  app.get("/api/weibo/:weiboId", async (request:Request, response:Response) => {
+  app.get("/api/weibo/:weiboId", async (request: Request, response: Response) => {
     const { weiboId } = request.params;
     if (!database) {
       console.log("database is not created");
@@ -122,7 +123,7 @@ function startServer(usernames: string[]): void {
   });
 
   //get comments list by a given weiboId
-  app.get("/api/comments/:weiboId", async (request:Request, response:Response) => {
+  app.get("/api/comments/:weiboId", async (request: Request, response: Response) => {
     const { weiboId } = request.params;
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
@@ -153,12 +154,49 @@ function startServer(usernames: string[]): void {
         totalNumber: comments.length,
       });
     } else {
-      response.send({ comments: null, totalNumber: 0 });
+      response.send({ comments: [], totalNumber: 0 });
     }
   });
 
+  //get repostComment list by a given weiboId
+  app.get('/api/repostComments/:weiboId', async (request: Request, response: Response) => {
+    const { weiboId } = request.params;
+    const page: string = (request.query.page || 0) as string;
+    const pageSize: string = (request.query.pageSize || 10) as string;
+    if (!database) {
+      console.log("database is not created");
+      response.status(400).send("Database is not created")
+      return;
+    }
+    const weiboCollection: WeiboCollection = database.weibo;
+    const weiboDoc: WeiboDocument | null = await weiboCollection
+      .findOne(weiboId)
+      .exec();
+    if (weiboDoc) {
+      const repostComments: RepostCommentDocument[] = await weiboDoc.populate("repostComments");
+      const filteredRepostComments: RepostCommentDocument[] = _.chain(repostComments)
+        .drop(parseInt(page) * parseInt(pageSize))
+        .take(parseInt(pageSize))
+        .value();
+      const filteredRepostCommentsWithUser = await PromiseBl.map(
+        filteredRepostComments,
+        async (item) => {
+          const userDoc: UserDocument = await item.populate("user");
+          return { ...item.toJSON(), user: userDoc.toJSON() };
+        }
+      );
+      response.send({
+        repostComments: filteredRepostCommentsWithUser,
+        totalNumber: repostComments.length,
+      });
+    } else {
+      response.send({ repostComments: [], totalNumber: 0 });
+    }
+
+
+  });
   // get comment content by a given comment
-  app.get("/api/comment/:commentId", async (request:Request, response:Response) => {
+  app.get("/api/comment/:commentId", async (request: Request, response: Response) => {
     const { commentId } = request.params;
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
@@ -208,7 +246,7 @@ function startServer(usernames: string[]): void {
   });
 
   //get subComments list by a given commentId
-  app.get('/api/subComment/:commentId', async (request:Request, response:Response) => {
+  app.get('/api/subComment/:commentId', async (request: Request, response: Response) => {
     const { commentId } = request.params;
     const page: string = (request.query.page || 0) as string;
     const pageSize: string = (request.query.pageSize || 10) as string;
@@ -250,6 +288,7 @@ function startServer(usernames: string[]): void {
       response.send({ subComments: null, totalNumber: 0 });
     }
   });
+
 
 
   app.use("/", express.static(path.resolve(__dirname, "../../", "frontend", "build")));

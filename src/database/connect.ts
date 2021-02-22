@@ -29,7 +29,7 @@ type DataBaseCollections = {
   weibo: WeiboCollection;
   comment: CommentCollection;
   subcomment: SubCommentCollection;
-  repostComment:RepostCommentCollection
+  repostcomment: RepostCommentCollection
 };
 type DatabaseType = RxDatabase<DataBaseCollections>;
 addRxPlugin(require("pouchdb-adapter-leveldb"));
@@ -42,27 +42,17 @@ const connectDB = async () => {
       name: rxdbPath,
       adapter: leveldown,
     });
-    await database.collection({
-      name: "weibo",
-      schema: weiboSchema,
-      statics: weiboCollectionMethods
-    });
-    await database.collection({
-      name: "user",
-      schema: userSchema,
-    });
-    await database.collection({
-      name: "comment",
-      schema: commentSchema,
-    });
-    await database.collection({
-      name: "subcomment",
-      schema: subCommentSchema,
-    });
-    await database.collection({
-      name:"repostComment",
-      schema:repostCommentSchema,
+    database.addCollections({
+      weibo: {
+        schema: weiboSchema,
+        statics: weiboCollectionMethods
+      },
+      user: { schema: userSchema },
+      comment: { schema: commentSchema },
+      subcomment: { schema: subCommentSchema },
+      repostcomment: { schema: repostCommentSchema }
     })
+
     return database;
   } catch (err) {
     console.error(err.message);

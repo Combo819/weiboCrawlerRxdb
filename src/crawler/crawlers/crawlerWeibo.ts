@@ -95,7 +95,8 @@ function saveWeibo(status: any): Promise<WeiboDocument> {
       comments: [],
       pageInfo,
       saveTime:Date.now(),
-      repostingId:retweetedStatus?.id
+      repostingId:retweetedStatus?.id,
+      repostComments:[]
     }; 
     try {
       

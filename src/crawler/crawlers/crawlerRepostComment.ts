@@ -63,14 +63,14 @@ const iteratee = (item: any, callback: any): void => {
         id,
         mid,
         text,
-        user: user.id,
+        user: String(user.id),
         createdAt,
         retweetId: retweetedStatus.id,
     };
     if (!database) {
         return;
     }
-    database.repostComment
+    database.repostcomment
         .atomicUpsert(newRepostComment)
         .then((res) => {
             saveUser(user);
@@ -127,6 +127,7 @@ const func = (params: RepostCommentParams): Promise<any> => {
                 resolve(null);
             })
             .catch((err) => {
+                console.log(err)
                 reject(err);
             });
     });

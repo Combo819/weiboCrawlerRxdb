@@ -23,6 +23,7 @@ export type IWeibo = {
   pageInfo?: any;
   saveTime: number;
   repostingId: string
+  repostComments:string[];
 };
 
 export const weiboSchema: RxJsonSchema<IWeibo> = {
@@ -47,7 +48,8 @@ export const weiboSchema: RxJsonSchema<IWeibo> = {
     pics: { type: "array" },
     pageInfo: { type: "object" },
     saveTime: { type: 'number' },
-    repostingId: { type: "string", ref: 'weibo' }
+    repostingId: { type: "string", ref: 'weibo' },
+    repostComments:{type:"array",ref:"repostcomment", items: { type: "string" }}
   },
   required: [
     "_id",
