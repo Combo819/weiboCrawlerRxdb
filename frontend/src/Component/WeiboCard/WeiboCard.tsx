@@ -27,7 +27,7 @@ export default function WeiboCard(props: CardProps) {
   const chunkImages: any[][] = _.chunk(weibo?.pics, 3);
   const history = useHistory();
 
-  const actionItemForWeiboList = [
+  const actionItems = [
     <div onClick={() => {
       //history.push(`/comments/${weibo.id}?page=1&pageSize=10`,'hello')
       history.push({
@@ -37,17 +37,18 @@ export default function WeiboCard(props: CardProps) {
       });
     }}>
       <Switch>
-        <Route path="/weibo/:weiboId/comments">
-          <RetweetOutlined style={{ position: "relative", top: -3 }}
-            key="repost" >
-          </RetweetOutlined>
-          <span>{weibo && weibo.repostsCount}</span>
-        </Route>
+
         <Route path="/weibo/:weiboId/reposts">
           <RetweetOutlined style={{ position: "relative", top: -3, color: '#1890ff' }}
             key="repost" >
           </RetweetOutlined>
           <span style={{ color: '#1890ff' }}>{weibo && weibo.repostsCount}</span>
+        </Route>
+        <Route>
+          <RetweetOutlined style={{ position: "relative", top: -3 }}
+            key="repost" >
+          </RetweetOutlined>
+          <span>{weibo && weibo.repostsCount}</span>
         </Route>
       </Switch>
     </div>
@@ -62,21 +63,22 @@ export default function WeiboCard(props: CardProps) {
           });
         }}
       >
-        <Route path="/weibo/:weiboId/comments">
-          <CommentOutlined
-            style={{ position: "relative", top: -3, color: '#1890ff' }}
-            key="comment"
-          ></CommentOutlined>
-          <span style={{ color: '#1890ff' }} >{weibo && weibo.commentsCount}</span>
-        </Route>
-        <Route path="/weibo/:weiboId/reposts">
-          <CommentOutlined
-            style={{ position: "relative", top: -3, }}
-            key="comment"
-          ></CommentOutlined>
-          <span >{weibo && weibo.commentsCount}</span>
-        </Route>
-
+        <Switch>
+          <Route path="/weibo/:weiboId/comments">
+            <CommentOutlined
+              style={{ position: "relative", top: -3, color: '#1890ff' }}
+              key="comment"
+            ></CommentOutlined>
+            <span style={{ color: '#1890ff' }} >{weibo && weibo.commentsCount}</span>
+          </Route>
+          <Route >
+            <CommentOutlined
+              style={{ position: "relative", top: -3, }}
+              key="comment"
+            ></CommentOutlined>
+            <span >{weibo && weibo.commentsCount}</span>
+          </Route>
+        </Switch>
       </div>
     ),
     <div>
@@ -91,7 +93,7 @@ export default function WeiboCard(props: CardProps) {
   return (
     <Card
       loading={loading || false}
-      actions={actionItemForWeiboList}
+      actions={actionItems}
       style={{ width: "100%" }}
     >
       {" "}
