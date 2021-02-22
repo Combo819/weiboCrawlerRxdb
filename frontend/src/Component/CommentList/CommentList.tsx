@@ -40,7 +40,7 @@ export default function CommentList(props: React.Props<any>) {
     setPage(String(newPage));
     setPageSize(String(pageSize));
     history.push({
-      pathname: `${pathname}`,
+      pathname: pathname,
       search: `?page=${newPage}&pageSize=${pageSize}`,
     });
   };
@@ -50,7 +50,7 @@ export default function CommentList(props: React.Props<any>) {
     setPage(String(newPage));
     setPageSize(String(pageSize));
     history.push({
-      pathname: `/comments/${weiboId}`,
+      pathname: pathname,
       search: `?page=${newPage}&pageSize=${pageSize}`,
     });
     if(listRef&&listRef.current){

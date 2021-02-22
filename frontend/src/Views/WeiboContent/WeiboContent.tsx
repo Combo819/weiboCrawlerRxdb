@@ -5,6 +5,8 @@ import { useParams, useLocation, useHistory } from "react-router-dom";
 import { getSingleWeiboApi } from "../../Api";
 import { CommentList } from "../../Component/CommentList";
 import { Weibo } from "../../types";
+import { Switch, Route } from 'react-router-dom';
+import { RepostCommentList } from "../../Component/RepostCommentList";
 function WeiboContent(props: React.Props<any>) {
   function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -14,7 +16,7 @@ function WeiboContent(props: React.Props<any>) {
   }
   const history = useHistory();
   console.log(useLocation(), "useLocation().state");
-  const { weiboId } = useParams<{weiboId:string}>();
+  const { weiboId } = useParams<{ weiboId: string }>();
   const query = useQuery();
   const [weibo, setWeibo] = useState<Weibo>({ comments: [] } as any);
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ function WeiboContent(props: React.Props<any>) {
         setWeibo(weibo);
         setLoading(false);
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }, [weiboId]);
 
   return (
@@ -55,13 +57,21 @@ function WeiboContent(props: React.Props<any>) {
       <Row justify="center">
         <Col style={{ width: 600 }}>
           <WeiboCard
-            isCommentsPage={true}
+            isWeiboContent={true}
             loading={loading}
             weibo={weibo}
           ></WeiboCard>
         </Col>
       </Row>
-      <CommentList></CommentList>
+      <Switch>
+        <Route path="/weibo/:weiboId/comments">
+          <CommentList />
+        </Route>
+        <Route path="/weibo/:weiboId/reposts">
+          <RepostCommentList />
+        </Route>
+      </Switch>
+
     </>
   );
 }

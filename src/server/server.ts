@@ -198,8 +198,6 @@ function startServer(usernames: string[]): void {
   // get comment content by a given comment
   app.get("/api/comment/:commentId", async (request: Request, response: Response) => {
     const { commentId } = request.params;
-    const page: string = (request.query.page || 0) as string;
-    const pageSize: string = (request.query.pageSize || 10) as string;
     if (!database) {
       console.log("database is not created");
       response.status(400).send("Database is not created")
@@ -211,30 +209,9 @@ function startServer(usernames: string[]): void {
       .exec();
     if (commentDoc) {
       const user: UserDocument = await commentDoc.populate("user");
-      const subComments: SubCommentDocument[] = await commentDoc.populate(
-        "subComments"
-      );
-      const filteredSubComments: SubCommentDocument[] = _.chain(subComments)
-        .drop(parseInt(page) * parseInt(pageSize))
-        .take(parseInt(pageSize))
-        .value();
-      const filteredSubCommentsUser = await PromiseBl.map(
-        filteredSubComments,
-        async (item) => {
-          const userDoc: UserDocument = await item.populate("user");
-          const commentDoc: CommentDocument = await item.populate("rootid");
-          const newSubComment = {
-            ...item.toJSON(),
-            user: userDoc.toJSON(),
-            rootid: commentDoc.toJSON(),
-          };
-          return newSubComment;
-        }
-      );
       const commentDocPopulated = {
         ...commentDoc.toJSON(),
         user: user.toJSON(),
-        subComments: filteredSubCommentsUser,
       };
       response.send({
         comment: commentDocPopulated,
@@ -285,7 +262,7 @@ function startServer(usernames: string[]): void {
         totalNumber: subComments.length,
       });
     } else {
-      response.send({ subComments: null, totalNumber: 0 });
+      response.send({ subComments: [], totalNumber: 0 });
     }
   });
 

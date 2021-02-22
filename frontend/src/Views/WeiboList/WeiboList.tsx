@@ -44,7 +44,7 @@ function WeiboList(Props: React.Props<any>) {
               <Row className={"mt-3"} key={item.id}>
                 <Col>
                   <WeiboCard
-                    isCommentsPage={false}
+                    isWeiboContent={false}
                     page={page}
                     pageSize={pageSize}
                     weibo={item}
