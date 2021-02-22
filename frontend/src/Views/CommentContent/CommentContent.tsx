@@ -14,7 +14,6 @@ function CommentContent(props: React.Props<any>) {
     return useLocation().state || { page: 1, pageSize: 10 };
   }
   const history = useHistory();
-  console.log(useLocation(), "useLocation().state");
   const { commentId } = useParams<{commentId:string}>();
   const query = useQuery();
   const [comment, SetComment] = useState({

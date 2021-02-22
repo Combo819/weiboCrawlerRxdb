@@ -15,7 +15,6 @@ function WeiboContent(props: React.Props<any>) {
     return useLocation().state || { page: 1, pageSize: 10 };
   }
   const history = useHistory();
-  console.log(useLocation(), "useLocation().state");
   const { weiboId } = useParams<{ weiboId: string }>();
   const query = useQuery();
   const [weibo, setWeibo] = useState<Weibo>({ comments: [] } as any);

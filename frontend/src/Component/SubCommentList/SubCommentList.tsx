@@ -8,7 +8,6 @@ import {getImageUrl} from '../../Utility/parseUrl';
 import {SubComment} from '../../types';
 
 export default function CommentList(props: React.Props<any>) {
-  console.log('enter commentList')
   function useQuery() {
     const query = new URLSearchParams(useLocation().search);
     return { page: query.get("page"), pageSize: query.get("pageSize") };
