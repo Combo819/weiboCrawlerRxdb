@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { Layout, Menu, Button, Dropdown, List } from "antd";
+import { Layout, Menu, Button, Dropdown, BackTop } from "antd";
 import { Switch, Route } from "react-router-dom";
 import { routes } from "./Routes";
 import { SaveWeiboModal } from "./Component/Modal";
-import { DownOutlined } from "@ant-design/icons";
+import { DownOutlined, UpCircleOutlined } from "@ant-design/icons";
 import { getMonitorUsersApi } from "./Api";
 
-const { Header, Content, Footer } = Layout;
-const { SubMenu } = Menu;
+const { Header, Content } = Layout;
 function App(): JSX.Element {
   const [isSaveModalVisible, setSaveModalVisible] = useState(false);
-  const [users, setUsers] = useState(new Array(0).fill(''));
-  useEffect(()=>{
-    getMonitorUsersApi().then(res=>{
-      const {users}:{users:string[]} = res.data;
+  const [users, setUsers] = useState(new Array(0).fill(""));
+  useEffect(() => {
+    getMonitorUsersApi().then((res) => {
+      const { users }: { users: string[] } = res.data;
       setUsers(users);
-    })
-  },[])
+    });
+  }, []);
   const menu = (
     <Menu>
       {users.map((item) => (
@@ -82,6 +81,9 @@ function App(): JSX.Element {
           setSaveModalVisible(false);
         }}
       ></SaveWeiboModal>
+      <BackTop>
+        <UpCircleOutlined style={{ fontSize: 30,color:"rgba(0, 0, 0, 0.45)" }}  />
+      </BackTop>
     </Layout>
   );
 }

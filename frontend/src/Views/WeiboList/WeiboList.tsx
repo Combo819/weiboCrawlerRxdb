@@ -6,7 +6,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import { Weibo as WeiboType } from "../../types";
 
 function WeiboList(Props: React.Props<any>) {
-  let listRef = useRef<any>(null)
+  let listRef = useRef<any>(null);
   function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
@@ -33,7 +33,10 @@ function WeiboList(Props: React.Props<any>) {
     const newPage = currentPage <= 0 ? 1 : currentPage;
     setPage(String(newPage));
     setPageSize(String(pageSize));
-    history.push({ pathname: '/', search: `?page=${newPage}&pageSize=${pageSize}` })
+    history.push({
+      pathname: "/",
+      search: `?page=${newPage}&pageSize=${pageSize}`,
+    });
   };
 
   const changePage = (currentPage: number, pageSize: number | undefined) => {
@@ -45,7 +48,7 @@ function WeiboList(Props: React.Props<any>) {
       search: `?page=${newPage}&pageSize=${pageSize}`,
     });
     if (listRef && listRef.current) {
-      listRef.current.scrollIntoView()
+      listRef.current.scrollIntoView();
     }
   };
 
@@ -53,30 +56,42 @@ function WeiboList(Props: React.Props<any>) {
     <>
       <Row justify="center" align="middle">
         <Col ref={listRef} xs={24} sm={20} md={12} lg={12} xl={8}>
-          {weibos.length > 0 ? weibos.map((item: any) => {
-            return (
-              <Row className={"mt-3"} key={item.id}>
-                <Col>
-                  <WeiboCard
-                    isWeiboContent={false}
-                    page={page}
-                    pageSize={pageSize}
-                    weibo={item}
-                  ></WeiboCard>
-                </Col>
-              </Row>
-            );
-          }) : <Empty />}
+          {weibos.length > 0 ? (
+            weibos.map((item: any) => {
+              return (
+                <Row className={"mt-3"} key={item.id}>
+                  <Col>
+                    <WeiboCard
+                      isWeiboContent={false}
+                      page={page}
+                      pageSize={pageSize}
+                      weibo={item}
+                    ></WeiboCard>
+                  </Col>
+                </Row>
+              );
+            })
+          ) : (
+            <Empty />
+          )}
         </Col>
       </Row>
       <Row justify="center" align="middle">
-        <Col className="d-flex flex-row-reverse" xs={24} sm={20} md={12} lg={12} xl={8}>
+        <Col
+          className="d-flex flex-row-reverse"
+          xs={24}
+          sm={20}
+          md={12}
+          lg={12}
+          xl={8}
+        >
           <Pagination
             onChange={changePage}
             showSizeChanger
             onShowSizeChange={onShowSizeChange}
-            defaultCurrent={parseInt(page || '1')}
+            current={parseInt(page || "1")}
             total={totalNumber}
+            pageSize={parseInt(pageSize || "10")}
             className="p-2"
           ></Pagination>
         </Col>

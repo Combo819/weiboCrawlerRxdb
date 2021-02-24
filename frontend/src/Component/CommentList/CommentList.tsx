@@ -134,9 +134,10 @@ export default function CommentList(props: React.Props<any>) {
             onChange={changePage}
             showSizeChanger
             onShowSizeChange={onShowSizeChange}
-            defaultCurrent={parseInt(page || "1")}
+            current={parseInt(page || "1")}
             total={totalNumber}
             className="p-2"
+            pageSize={parseInt(pageSize || "10")}
           ></Pagination>
         </Col>
       </Row>

@@ -92,6 +92,28 @@ function startServer(usernames: string[]): void {
       });
   });
 
+  app.delete('/api/weibo/:weiboId',async (request: Request, response: Response)=>{
+    const { weiboId } = request.params;
+    if (!database) {
+      console.log("database is not created");
+      response.status(400).send("Database is not created")
+      return;
+    };
+    const weiboCollection: WeiboCollection = database.weibo;
+    const weiboDoc: WeiboDocument | null = await weiboCollection
+      .findOne(weiboId)
+      .exec();
+    if(weiboDoc){
+      try{
+        const result = await weiboDoc.remove();
+        return response.send({result});
+      }catch(err){
+        console.log(err);
+      }
+    }
+    return response.send({result:false})
+  })
+
   //get weibo content by a given weiboId
   app.get("/api/weibo/:weiboId", async (request: Request, response: Response) => {
     const { weiboId } = request.params;
@@ -112,8 +134,8 @@ function startServer(usernames: string[]): void {
         repostingUser = await reposting.populate('user');
       };
       const populatedWeiboDoc = {
-        ...weiboDoc.toJSON(),
-        user: userDoc.toJSON(),
+        ...weiboDoc?.toJSON(),
+        user: userDoc?.toJSON(),
         reposting: { ...reposting?.toJSON(), user: repostingUser?.toJSON() }
       };
       response.send({ weibo: populatedWeiboDoc, totalNumber: 1 });

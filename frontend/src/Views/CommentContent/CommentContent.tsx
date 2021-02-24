@@ -48,7 +48,7 @@ function CommentContent(props: React.Props<any>) {
             className="site-page-header"
             onBack={() => {
               history.push({
-                pathname: `/comments/${comment&&comment.weiboId}`,
+                pathname: `/weibo/${comment.weiboId}/comments`,
                 search: `?page=${backPage}&pageSize=${backPageSize}`,
               });
             }}

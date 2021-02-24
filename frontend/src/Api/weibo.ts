@@ -1,7 +1,7 @@
 import { axios } from "./config";
 import { AxiosPromise } from "axios";
 import { Weibo, User, SubComment, Comment } from '../types'
-function getWeibosApi(page: number, pageSize: number): AxiosPromise<{weibo:Weibo[],totalNumber:number}> {
+function getWeibosApi(page: number, pageSize: number): AxiosPromise<{ weibo: Weibo[], totalNumber: number }> {
   return axios({
     url: "/weibos",
     params: { page: page - 1, pageSize },
@@ -27,6 +27,13 @@ function saveWeiboApi(weiboId: string): AxiosPromise {
     url: `/save`,
     data: { weiboId }
   })
+};
+
+function deleteWeiboApi(weiboId: string): AxiosPromise<{result:boolean}> {
+  return axios({
+    method: 'delete',
+    url: `/weibo/${weiboId}`,
+  })
 }
 
-export { getWeibosApi, getSingleWeiboApi, saveWeiboApi };
+export { getWeibosApi, getSingleWeiboApi, saveWeiboApi,deleteWeiboApi };
