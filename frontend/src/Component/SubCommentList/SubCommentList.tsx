@@ -1,11 +1,11 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Col, Row, List, Avatar, Pagination } from "antd";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { getSubCommentsApi } from "../../Api";
 import HtmlParser from "react-html-parser";
 import { LikeOutlined } from "@ant-design/icons";
-import {getImageUrl} from '../../Utility/parseUrl';
-import {SubComment} from '../../types';
+import { getImageUrl } from "../../Utility/parseUrl";
+import { SubComment } from "../../types";
 
 export default function CommentList(props: React.Props<any>) {
   function useQuery() {
@@ -16,7 +16,7 @@ export default function CommentList(props: React.Props<any>) {
   let listRef = useRef<any>(null);
   const history = useHistory();
   const { pathname } = useLocation();
-  const { commentId } = useParams<{commentId:string}>();
+  const { commentId } = useParams<{ commentId: string }>();
   const { page: urlPage, pageSize: urlPageSize } = useQuery();
   const [subComments, setSubComments] = useState<SubComment[]>([]);
   const [totalNumber, setTotalNumber] = useState(0);
@@ -40,7 +40,7 @@ export default function CommentList(props: React.Props<any>) {
       .catch((err) => {});
   }, [commentId, page, pageSize]);
   const onShowSizeChange = (currentPage: number, pageSize: number) => {
-    const newPage = currentPage<=0?1:currentPage;
+    const newPage = currentPage <= 0 ? 1 : currentPage;
     setPage(String(newPage));
     setPageSize(String(pageSize));
     history.push({
@@ -50,16 +50,16 @@ export default function CommentList(props: React.Props<any>) {
   };
 
   const changePage = (currentPage: number, pageSize: number | undefined) => {
-    const newPage = currentPage<=0?1:currentPage;
+    const newPage = currentPage <= 0 ? 1 : currentPage;
     setPage(String(newPage));
     setPageSize(String(pageSize));
     history.push({
       pathname: `${pathname}`,
       search: `?page=${newPage}&pageSize=${pageSize}`,
     });
-   if(listRef&&listRef.current){
-    listRef.current.scrollIntoView();
-   } 
+    if (listRef && listRef.current) {
+      listRef.current.scrollIntoView();
+    }
   };
   return (
     <>
@@ -71,7 +71,7 @@ export default function CommentList(props: React.Props<any>) {
             split
             loading={loading}
             itemLayout="horizontal"
-            dataSource={(subComments||[]) as SubComment[]}
+            dataSource={(subComments || []) as SubComment[]}
             renderItem={(item: any) => (
               <List.Item
                 actions={[
@@ -85,7 +85,11 @@ export default function CommentList(props: React.Props<any>) {
                 ]}
               >
                 <List.Item.Meta
-                  avatar={<Avatar src={item.user && getImageUrl(item.user.avatarHd) } />}
+                  avatar={
+                    <Avatar
+                      src={item.user && getImageUrl(item.user.avatarHd)}
+                    />
+                  }
                   title={
                     <a target="_blank" href={item?.user?.profileUrl}>{`@${
                       item.user && item.user.screenName
@@ -99,7 +103,14 @@ export default function CommentList(props: React.Props<any>) {
         </Col>
       </Row>
       <Row justify="center" align="middle">
-        <Col className="d-flex flex-row-reverse" span={8}>
+        <Col
+          className="d-flex flex-row-reverse"
+          xs={24}
+          sm={20}
+          md={12}
+          lg={12}
+          xl={8}
+        >
           <Pagination
             onChange={changePage}
             showSizeChanger

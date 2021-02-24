@@ -7,7 +7,7 @@ import { LikeOutlined, PictureOutlined } from "@ant-design/icons";
 import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import "react-photo-view/dist/index.css";
 import { getImageUrl } from "../../Utility/parseUrl";
-import { Comment } from '../../types'
+import { Comment } from "../../types";
 export default function CommentList(props: React.Props<any>) {
   function useQuery() {
     const query = new URLSearchParams(useLocation().search);
@@ -33,7 +33,7 @@ export default function CommentList(props: React.Props<any>) {
         setTotalNumber(totalNumber);
         setLoading(false);
       })
-      .catch((err) => { });
+      .catch((err) => {});
   }, [weiboId, page, pageSize]);
   const onShowSizeChange = (currentPage: number, pageSize: number) => {
     const newPage = currentPage <= 0 ? 1 : currentPage;
@@ -53,8 +53,8 @@ export default function CommentList(props: React.Props<any>) {
       pathname: pathname,
       search: `?page=${newPage}&pageSize=${pageSize}`,
     });
-    if(listRef&&listRef.current){
-    listRef.current.scrollIntoView()
+    if (listRef && listRef.current) {
+      listRef.current.scrollIntoView();
     }
   };
   const toSubComments = (commentId: string) => {
@@ -67,10 +67,10 @@ export default function CommentList(props: React.Props<any>) {
 
   const repliesStyle = (num: number) => {
     if (num > 0) {
-      return { color: "#1890ff" }
+      return { color: "#1890ff" };
     }
-    return { cursor: "default" }
-  }
+    return { cursor: "default" };
+  };
   return (
     <>
       <Row justify="center">
@@ -97,7 +97,6 @@ export default function CommentList(props: React.Props<any>) {
                       if (item.subComments.length > 0) {
                         toSubComments(item && item.id);
                       }
-
                     }}
                     key="list-loadmore-edit"
                     style={repliesStyle(item.subComments.length)}
@@ -116,10 +115,15 @@ export default function CommentList(props: React.Props<any>) {
                 ]}
               >
                 <List.Item.Meta
-                  avatar={<Avatar src={item.user && getImageUrl(item.user.avatarHd)} />}
+                  avatar={
+                    <Avatar
+                      src={item.user && getImageUrl(item.user.avatarHd)}
+                    />
+                  }
                   title={
-                    <a target="_blank" href={item?.user?.profileUrl}>{`@${item.user && item.user.screenName
-                      }`}</a>
+                    <a target="_blank" href={item?.user?.profileUrl}>{`@${
+                      item.user && item.user.screenName
+                    }`}</a>
                   }
                   description={HtmlParser(item.text)}
                 />
@@ -129,7 +133,14 @@ export default function CommentList(props: React.Props<any>) {
         </Col>
       </Row>
       <Row justify="center" align="middle">
-        <Col className="d-flex flex-row-reverse" span={8}>
+        <Col
+          className="d-flex flex-row-reverse"
+          xs={24}
+          sm={20}
+          md={12}
+          lg={12}
+          xl={8}
+        >
           <Pagination
             onChange={changePage}
             showSizeChanger
