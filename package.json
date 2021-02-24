@@ -1,13 +1,15 @@
 {
   "name": "weiboCrawlerTs",
-  "version": "1.0.2",
+  "version": "0.9.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "start": "nodemon",
-    "build": "rimraf ./build &&npx tsc"
+    "build": "rimraf ./build &&npx tsc",
+    "pkg": "pkg . --out-path=dist/",
+    "dist": "node ./pkgScript.js"
   },
   "keywords": [],
   "author": "",
@@ -44,11 +46,29 @@
     "@types/puppeteer-core": "^2.0.0",
     "@types/readline-sync": "^1.4.3",
     "@types/uuid": "^8.3.0",
+    "cpy": "^8.1.1",
+    "execa": "^5.0.0",
+    "fs-extra": "^9.1.0",
     "nodemon": "^2.0.4",
+    "pkg": "^4.4.9",
     "rimraf": "^3.0.2",
     "ts-loader": "^8.0.3",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
   },
-  "bin": "./build/index.js"
+  "bin": "./build/index.js",
+  "pkg": {
+    "assets": [
+      "./frontend/build",
+      "./node_modules/**/*"
+    ],
+    "options": [
+      "experimental-modules"
+    ],
+    "targets": [
+      "node12-win-x64",
+      "node12-linux-x64",
+      "node12-macos-x64"
+    ]
+  }
 }
