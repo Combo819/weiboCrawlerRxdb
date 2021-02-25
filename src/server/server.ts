@@ -92,6 +92,7 @@ function startServer(usernames: string[]): void {
       });
   });
 
+  //delete a weibo record by Id
   app.delete('/api/weibo/:weiboId',async (request: Request, response: Response)=>{
     const { weiboId } = request.params;
     if (!database) {
