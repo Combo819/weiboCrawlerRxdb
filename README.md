@@ -18,8 +18,15 @@
 其中`cookie`是小号的cookie，获取cookie的方法请参照[cookie.md](https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md)
 `users`是要监听私信的用户名（大号）。只能是用户名而不能是手机或者邮箱。 比如你的微博大号是`@van`， 则`"users":["van"]`。你可以同时监听多个微博账号。
 
+### 免cookie模式
+如果你没有配置`credential.json`文件，或者文件里的`cookie`项留空了，在下一步程序启动时会询问你是否要以免cookie模式启动。到时请按`y`+回车启动程序，或者按任意键结束程序。  
+![20210301173435](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301173435.png)
+免cookie模式下，你将：
++ 每条微博最多备份200条评论，每条评论最多备份10条回复
++ 无法监听大号的私信来自动备份微博。你只能从程序的网页上点击save按钮，并粘贴微博url/id来备份微博。
+
 ### 启动程序
-<details><summary>windows</summary>
+<details><summary>Windows</summary>
 
 + 打开程序所在目录，在地址栏输入`powershell`按下回车
 ![20210224232313](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210224232313.png)
@@ -41,7 +48,7 @@
 + 点击左上角的save按钮，在弹出的输入框中输入微博的url或者ID。如果你配置了cookie，在程序启动两分钟后私信分享一条微博给小号。微博保存成功后要刷新页面。
 </details>
 
-<details><summary>macos</summary>
+<details><summary>Macos</summary>
 
 + 右键点击程序所在目录，点选 服务->新建位于文件夹地终端标签页.
   ![20210228164646](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210228164646.png)
@@ -54,12 +61,7 @@
 + 点击左上角的save按钮，在弹出的输入框中输入微博的url或者ID。如果你配置了cookie，在程序启动两分钟后私信分享一条微博给小号。微博保存成功后要刷新页面。
 </details>
 
-### 免cookie模式
-如果你没有配置`credential.json`文件，或者文件里的`cookie`项留空了，程序在启动时会询问你是否要以免cookie模式启动。请按`y`+回车启动程序，或者按任意键结束程序。  
-![20210301173435](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301173435.png)
-免cookie模式下，你将：
-+ 每条微博最多备份200条评论，每条评论最多备份10条回复
-+ 无法监听大号的私信来自动备份微博。你只能从程序的网页上点击save按钮，并粘贴微博url/id来备份微博。
+
 ### 注意事项
 + 你可以随时打开/关闭网页，请勿关闭terminal/powershell，否则程序将停止运行。你可以使用[pm2](https://pm2.keymetrics.io/docs/usage/quick-start/), [tmux](https://github.com/tmux/tmux), [screen](https://www.gnu.org/software/screen/manual/screen.html)等工具让程序持久化运行。
 + 备份是一个漫长的过程。刚开始只有几条评论，请耐心等待备份完成。

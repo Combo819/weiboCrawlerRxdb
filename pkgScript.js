@@ -1,11 +1,12 @@
 async function pkgScript() {
     const execa = require('execa');
     const cpy = require('cpy');
-    const fs = require('fs-extra')
+    const fs = require('fs-extra');
+    const path = require('path');
     try {
         process.chdir("frontend")
         const isNodeModules = await fs.pathExists('node_modules');
-        if(!isNodeModules){
+        if (!isNodeModules) {
             await execa.command("npm i");
         }
         await execa.command("npm run build");
@@ -39,16 +40,22 @@ async function pkgScript() {
             continue;
         }
         if (addons.length) {
-            await cpy(addons, './dist');
+            await cpy(addons, path.join('./dist', "linux"));
         }
         if (directories.length) {
             directories.forEach((source) => {
-                const paths = source.split('/');
-                fs.copy(source, "./dist/" + paths[paths.length - 1], (err) => {
+                const paths = source.split(path.sep);
+                fs.copy(source, path.join("./dist/", 'linux', paths[paths.length - 1]), (err) => {
                     console.log(err);
                 })
             })
         }
+        const namePrefix = "weiboCrawlerTs-";
+        fs.copySync(path.join("./dist", 'linux'), path.join("./dist", 'win'));
+        fs.moveSync(path.join("./dist", namePrefix + 'win.exe'), path.join("./dist", 'win', namePrefix + 'win.exe'))
+        fs.copySync(path.join("./dist", 'linux'), path.join("./dist", 'macos'));
+        fs.moveSync(path.join("./dist", namePrefix + 'macos'), path.join("./dist", 'macos', namePrefix + 'macos'))
+        fs.moveSync(path.join("./dist", namePrefix + 'linux'), path.join("./dist", 'linux', namePrefix + 'linux'))
     } catch (err) {
         console.log(err);
     }
