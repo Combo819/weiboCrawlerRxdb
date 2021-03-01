@@ -21,11 +21,11 @@ function getSingleWeiboApi(weiboId: string, page: number, pageSize: number): Axi
   })
 }
 
-function saveWeiboApi(weiboId: string): AxiosPromise {
+function saveWeiboApi(weiboIdUrl: string): AxiosPromise {
   return axios({
     method: 'post',
     url: `/save`,
-    data: { weiboId }
+    data: { weiboIdUrl }
   })
 };
 

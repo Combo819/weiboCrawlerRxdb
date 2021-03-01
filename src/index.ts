@@ -4,11 +4,31 @@ import { Listener } from "./listener";
 import PromiseBL from "bluebird";
 import { getUserId, axios, checkCookie } from "./request";
 import { getCredentialFile } from "./utility/readCredential";
-
+const { Confirm } = require('enquirer');
 getCredentialFile()
   .then((res) => {
     const { cookie, users: listenerUsers } = res;
-    console.log(cookie);
+    if (!cookie) {
+      const prompt = new Confirm({
+        name: 'question',
+        message: 'No cookie or the cookie is invalid. Do you want to start as non-cookie mode?'
+      });
+      prompt.run()
+        .then((answer: Boolean) => {
+          if (answer) {
+            connectDB().then(async (db) => {
+              startServer([]);
+            }).catch(err => {
+              console.log("Failed to connect to database", err);
+              process.exit(1);
+            });
+          } else {
+            console.log('Terminating process');
+            process.exit(1);
+          }
+        });
+      return;
+    }
     axios.defaults.headers.common["cookie"] = cookie;
     checkCookie(cookie).then(res => {
       console.warn('The cookie is invalid or expired');
@@ -30,7 +50,10 @@ getCredentialFile()
           );
           const listener = new Listener(userIds || []);
           startServer(usernames);
-        });
+        }).catch(err => {
+          console.log("Failed to connect to database", err);
+          process.exit(1);
+        });;
       } else {
         console.warn('The cookie is invalid or expired');
         process.exit(1);

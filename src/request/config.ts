@@ -20,17 +20,19 @@ const downloadHeader:DownloadHeader = {
 
 const crawlerAxios: AxiosInstance = axios.create({
   baseURL: baseUrl,
-  headers: header,
+  //headers: header,
 });
 
 const downloadAxios: AxiosInstance = axios.create({
-  headers:downloadHeader,
+  //headers:downloadHeader,
 });
 
 
 [crawlerAxios,downloadAxios].forEach((item:AxiosInstance) => {
   item.interceptors.request.use(request => {
-    request.headers['cookie'] = axios.defaults.headers.common['cookie'];
+    if(axios.defaults.headers.common['cookie']){
+      request.headers['cookie'] = axios.defaults.headers.common['cookie'];
+    }
     return request
   })
 });
