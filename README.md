@@ -4,9 +4,10 @@
 ## 使用
 ### 下载
 [pre-release-0.9](https://github.com/Combo819/weiboCrawlerRxdb/releases/tag/0.9)下载对应系统版本，下载后解压
-### 账号
-准备两个微博账号，一个是日常使用的账号（大号），另一个用来爬虫（小号）。每次大号给小号私信分享一条微博，该微博就会被备份下来。
-### 创建配置文件
+### 账号 
+准备两个微博账号，一个是日常使用的账号（大号），另一个用来爬虫（小号）。每次大号给小号私信分享一条微博，该微博就会被备份下来。  
+没有小号的请下拉查看[免cookie模式](#免cookie模式)
+### 创建配置文件 ([免cookie模式](#免cookie模式)请跳过)
 在程序的根目录创建一个`credential.json`文件来记录微博的cookie和需要监听的用户。
 ```json
 {
@@ -24,17 +25,20 @@
 ![20210224232313](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210224232313.png)
 + 右键点击左上角powershell图标，点属性，关闭快速编辑模式，以防止程序假死
 ![20210224232540](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210224232540.png)
-+ 在powershell输入` .\weiboCrawlerTs-win.exe`,回车。程序启动后会自动打开浏览器。如果没有自动打开，则手动打开浏览器并进入`http://localhost:5000`（默认5000，以powershell显示为准）
++ 在powershell输入` .\weiboCrawlerTs-win.exe`,回车。如果你没有配置cookie，程序会问你是否进入免cookie模式。按`y`+ 回车确认，否则按任意键退出。
++ 程序启动后会自动打开浏览器。如果没有自动打开，则手动打开浏览器并进入`http://localhost:5000`（默认5000，以powershell显示为准）
 ![20210224232938](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210224232938.png)
 ![20200926160706](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20200926160706.png)
-
++ 点击左上角的save按钮，在弹出的输入框中输入微博的url或者ID。如果你配置了cookie，在程序启动两分钟后私信分享一条微博给小号。微博保存成功后要刷新页面。
 </details>
 
 <details><summary>Linux</summary>
 
-
-+ 在terminal进入程序所在的目录，运行`./weiboCrawlerTs-linux`。程序启动后会自动打开浏览器。如果没有自动打开，则手动打开浏览器并进入`http://localhost:5000`（默认5000，以terminal显示为准）
-+ 如果没有运行权限，先输入`chmod +x ./weiboCrawlerTs-linux`修改权限再重试
++ 在terminal进入程序所在的目录，
++ 首次运行如果没有运行权限，先输入`chmod +x ./weiboCrawlerTs-linux`修改权限
++ 运行`./weiboCrawlerTs-linux`。如果你没有配置cookie，程序会问你是否进入免cookie模式。按`y`+ 回车确认，否则按任意键退出。
++ 程序启动后会自动打开浏览器。如果没有自动打开，则手动打开浏览器并进入`http://localhost:5000`（默认5000，以terminal显示为准）
++ 点击左上角的save按钮，在弹出的输入框中输入微博的url或者ID。如果你配置了cookie，在程序启动两分钟后私信分享一条微博给小号。微博保存成功后要刷新页面。
 </details>
 
 <details><summary>macos</summary>
@@ -42,16 +46,22 @@
 + 右键点击程序所在目录，点选 服务->新建位于文件夹地终端标签页.
   ![20210228164646](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210228164646.png)
 + 输入`chmod +x ./weiboCrawlerTs-macos`, 回车(第一次运行才需要)
-+ 输入`./weiboCrawlerTs-macos`，回车，启动程序
-![20210228164727](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210228164727.png)
++ 输入`./weiboCrawlerTs-macos`，回车，启动程序。如果你没有配置cookie，程序会问你是否进入免cookie模式。按`y`+ `return`确认，否则按任意键退出。
+![mac-terminal](https://raw.githubusercontent.com/kang-ut/picbed/master/img/mac-terminal.png)
 + 程序启动后会自动打开浏览器。如果没有自动打开，则手动打开浏览器并进入`http://localhost:5000`（默认5000，以terminal显示为准）   
 ![20200926160706](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20200926160706.png)
-
++ 第一次运行可能会弹出防火墙提示，如果你希望在局域网内访问程序的网页，点击允许。
++ 点击左上角的save按钮，在弹出的输入框中输入微博的url或者ID。如果你配置了cookie，在程序启动两分钟后私信分享一条微博给小号。微博保存成功后要刷新页面。
 </details>
 
+### 免cookie模式
+如果你没有配置`credential.json`文件，或者文件里的`cookie`项留空了，程序在启动时会询问你是否要以免cookie模式启动。请按`y`+回车启动程序，或者按任意键结束程序。  
+![20210301173435](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301173435.png)
+免cookie模式下，你将：
++ 每条微博最多备份200条评论，每条评论最多备份10条回复
++ 无法监听大号的私信来自动备份微博。你只能从程序的网页上点击save按钮，并粘贴微博url/id来备份微博。
 ### 注意事项
-+ 程序启动后大约2分钟，大号私信分享一条微博给小号。不久程序会开始爬虫，这时刷新`localhost:5000`会能看到新备份的微博。过早分享的微博不一定能备份上
-+ 你可以随时打开/关闭网页，请勿关闭terminal/powershell，否则程序将停止运行。
++ 你可以随时打开/关闭网页，请勿关闭terminal/powershell，否则程序将停止运行。你可以使用[pm2](https://pm2.keymetrics.io/docs/usage/quick-start/), [tmux](https://github.com/tmux/tmux), [screen](https://www.gnu.org/software/screen/manual/screen.html)等工具让程序持久化运行。
 + 备份是一个漫长的过程。刚开始只有几条评论，请耐心等待备份完成。
 
 ### 项目的优势
@@ -61,6 +71,39 @@ Github上已经有很多微博的爬虫仓库了。区别于其他爬虫，本�
 + 其他爬虫大多面向研究者，用于数据分析/语义分析。本爬虫面向个人用户，不仅备份了微博数据，还将备份的微博用网页展示出来。
 + 对比收藏，本程序将数据和图片/视频都下载到本地，不会被和谐。
 + 对比手机截屏，本程序的备份更加完整，也比截图更有组织性。
+
+### 局域网访问
+
+<details><summary>macos</summary>
+
++ 查找局域网下本机的ip地址。点wifi图标-> 网络偏好设置。图中的`192.168.2.18`就是本机在局域网中的ip地址
+![ip](https://raw.githubusercontent.com/kang-ut/picbed/master/img/ip.png)
++ 在局域网的其他设备下打开浏览器，尝试访问`http://${ip4}:5000`。其中`${ip}`替换为你查到的ip4地址。比如上图中是`http://192.168.2.20:5000`。如果网页加载成功，则大功告成。否则下一步
++ 点击系统偏好设置->安全性与隐私
+![setting](https://raw.githubusercontent.com/kang-ut/picbed/master/img/setting.png)
++ 点击防火墙，点左下角解锁，点击防火墙选项
+![firewall](https://raw.githubusercontent.com/kang-ut/picbed/master/img/firewall.png)
++ 查找列表中有没有`weiboCrawlerTs-macos`，如果没有则点击加号，在目录中找到并添加，然后改成`允许传入连接`。点击 好，再把锁头锁回去。
+![add-app](https://raw.githubusercontent.com/kang-ut/picbed/master/img/add-app.png)
+
+
+</details>
+<details><summary>Windows</summary>
+
++ 查找局域网下本机的ip地址。点击wifi图标->属性 找到ip4地址
+![20210301152945](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301152945.png)
+![20210301153212](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301153212.png)
++ 在局域网的其他设备下打开浏览器，尝试访问`http://${ip4}:5000`。其中`${ip}`替换为你查到的ip4地址。比如上图中是`http://192.168.2.20:5000`。如果网页加载成功，则大功告成。否则下一步
++ 打开程序所在的电脑的防火墙。按win键，搜索“防火墙”，点击`高级安全 windows defender防火墙`
+![20210301153857](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301153857.png)
++ 点击`入站规则`,找到`weiboCrawlerts-win.exe`, 点击`属性`
+![20210301154046](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301154046.png)
++ 点击允许连接，并确定
+![20210301154302](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301154302.png)
+</details>
+<details><summary>Linux</summary>
+请参照macos或windows的教程自行摸索
+</details>
 
 ## 开发
 ### 环境

@@ -11,7 +11,7 @@ getCredentialFile()
     if (!cookie) {
       const prompt = new Confirm({
         name: 'question',
-        message: 'No cookie or the cookie is invalid. Do you want to start as non-cookie mode?'
+        message: '(non-cookie mode) No cookie detected. The message listener feature will be unavailable. Start anyway?'
       });
       prompt.run()
         .then((answer: Boolean) => {
