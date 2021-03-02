@@ -10,18 +10,25 @@ import { AxiosPromise } from "axios";
  */
 function getCommentApi(
   id: string,
-  maxId?: string | undefined,
-  mid?: string | undefined,
-  maxIdType?: number | undefined
+  maxId?: string,
+  mid?: string,
+  maxIdType?: number,
+  count?: number
 ): AxiosPromise {
   return crawlerAxios({
     url: "/comments/hotflow",
-    params: {
+    params: count ? {
       id,
       mid: mid || id,
       max_id: maxId,
       max_id_type: maxIdType || 0,
-    },
+      count,
+    } : {
+        id,
+        mid: mid || id,
+        max_id: maxId,
+        max_id_type: maxIdType || 0,
+      },
   });
 }
 

@@ -158,6 +158,8 @@ export default function WeiboCard(props: CardProps) {
       />
       {weibo?.repostingId && (
         <RepostCard
+          page={page}
+          pageSize= {pageSize}
           loading={loading || false}
           repostedWeibo={weibo?.reposting as Weibo}
         />

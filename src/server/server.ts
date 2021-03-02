@@ -11,14 +11,14 @@ import {
 
 } from "../database/collections";
 import { port, staticPath } from "../config";
-import express, { Application, Request, response, Response } from "express";
+import express, { Application, Request, Response } from "express";
 
 import { database } from "../database/connect";
 import { Promise as PromiseBl } from "bluebird";
 import _ from "lodash";
 import path from "path";
 import getPort from "get-port";
-
+import {parseWeiboId} from '../utility/parseWeiboId'
 const open = require("open");
 function startServer(usernames: string[]): void {
   interface ResponseBody {
@@ -35,15 +35,24 @@ function startServer(usernames: string[]): void {
   app.use(express.static(staticPath));
 
   //save a weibo
-  app.post("/api/save", (request: Request, response: Response) => {
-    const { weiboId }: { weiboId: string } = request.body;
-    console.log(weiboId, "weiboId");
+  app.post("/api/save", async (request: Request, response: Response) => {
+    const { weiboIdUrl }: { weiboIdUrl: string } = request.body;
+    let weiboId:string = "";
+    try{
+  
+      weiboId = await parseWeiboId(weiboIdUrl);
+
+    }catch(err){
+      const resBody: ResponseBody = { status: "error", message: "Weibo url or Id is invalid"};
+      response.send(resBody);
+    }
     startCrawler(weiboId)
       .then((res) => {
         const resBody: ResponseBody = { status: "success", message: res };
         response.send(resBody);
       })
       .catch((err) => {
+        console.log(err)
         const resBody: ResponseBody = { status: "error" };
         response.send(resBody);
       });

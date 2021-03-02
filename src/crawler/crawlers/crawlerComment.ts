@@ -1,9 +1,8 @@
-import { getCommentApi } from "../../request";
+import { getCommentApi,axios } from "../../request";
 import { q } from "../queue";
 import {
   WeiboDocument,
   IComment,
-  IWeibo,
   CommentDocument,
 } from "../../database/collections";
 import { database } from "../../database/connect";
@@ -13,7 +12,6 @@ import { saveUser } from "./saveUser";
 import { map } from "async";
 import downloadImage from "../downloader/image";
 import { staticPath } from "../../config";
-import { stringify } from "querystring";
 
 /**
  * the params that the func needs in async queue worker
@@ -24,6 +22,7 @@ interface commentParams {
   mid?: string | undefined;
   maxId?: string | undefined;
   maxIdType?: number | undefined;
+  count?:number;
 }
 
 /**
@@ -39,6 +38,10 @@ export default function crawlerComment(
     weiboDoc,
     id: weiboId,
   };
+  //if it's non-cookie mode
+  if(!axios.defaults.headers.common['cookie']){
+    firstCommentParams['count'] = 200;
+  }
   console.log(
     q.length(),
     "q.length",
@@ -56,7 +59,7 @@ export default function crawlerComment(
  * @param callback
  */
 const iteratee = (item: any, callback: any): void => {
-  const {
+  let {
     id,
     mid,
     rootid,
@@ -71,7 +74,7 @@ const iteratee = (item: any, callback: any): void => {
     pic,
     weiboId,
   } = item;
-
+  
   const newComment: IComment = {
     _id: id,
     id: String(id),
@@ -83,7 +86,7 @@ const iteratee = (item: any, callback: any): void => {
     maxId: String(maxId),
     totalNumber,
     user: String(user.id),
-    likeCount,
+    likeCount:Number(likeCount),
     createdAt,
     subComments: [],
     pic,
@@ -114,8 +117,8 @@ const iteratee = (item: any, callback: any): void => {
  */
 const func = (params: commentParams): Promise<any> => {
   return new Promise((resolve, reject) => {
-    const { weiboDoc, id, mid, maxId, maxIdType } = params;
-    getCommentApi(id, maxId, mid, maxIdType)
+    const { weiboDoc, id, mid, maxId, maxIdType,count } = params;
+    getCommentApi(id, maxId, mid, maxIdType,count)
       .then(async (res) => {
         // console.log(res, "res in getting comment");
         if (!res.data.data) {

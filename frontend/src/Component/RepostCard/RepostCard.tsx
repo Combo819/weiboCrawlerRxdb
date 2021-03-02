@@ -6,19 +6,46 @@ import HtmlParser from "react-html-parser";
 import ReactPlayer from "react-player";
 import { getImageUrl, getVideoUrl } from "../../Utility/parseUrl";
 import _ from "lodash";
-import { LikeOutlined, CommentOutlined } from "@ant-design/icons";
+import {
+  LikeOutlined,
+  CommentOutlined,
+  RetweetOutlined,
+} from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 type RepostCardProps = {
   repostedWeibo: Weibo;
   loading: boolean;
+  page?: string | null;
+  pageSize?: string | null;
 };
 
-function RepostCard({ repostedWeibo: weibo, loading }: RepostCardProps) {
+function RepostCard({
+  repostedWeibo: weibo,
+  loading,
+  page,
+  pageSize,
+}: RepostCardProps) {
   const chunkImages: any[][] = _.chunk(weibo?.pics, 3);
   const history = useHistory();
   return (
     <Card
       actions={[
+        <div
+          onClick={() => {
+            //history.push(`/comments/${weibo.id}?page=1&pageSize=10`,'hello')
+            history.push({
+              pathname: `/weibo/${weibo.id}/reposts`,
+              search: `?page=1&pageSize=10`,
+              state: { page, pageSize },
+            });
+          }}
+        >
+          <RetweetOutlined
+            style={{ position: "relative", top: -3 }}
+            key="repost"
+          ></RetweetOutlined>
+          <span>{weibo && weibo.repostsCount}</span>
+        </div>,
         <div
           onClick={() => {
             //history.push(`/comments/${weibo.id}?page=1&pageSize=10`,'hello')
@@ -53,7 +80,12 @@ function RepostCard({ repostedWeibo: weibo, loading }: RepostCardProps) {
             src={weibo && weibo.user && getImageUrl(weibo.user.avatarHd)}
           />
         }
-        title={<a target='_blank' href={`https://m.weibo.cn/u/${weibo?.user?.id}`}>{`@${weibo && weibo.user && weibo.user.screenName}`}</a>  }
+        title={
+          <a
+            target="_blank"
+            href={`https://m.weibo.cn/u/${weibo?.user?.id}`}
+          >{`@${weibo && weibo.user && weibo.user.screenName}`}</a>
+        }
         description={HtmlParser(weibo && weibo.text)}
       />
       {weibo && weibo.pics && (

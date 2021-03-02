@@ -7,22 +7,23 @@ interface ParsedConfigs {
   users: string[];
 }
 async function getCredentialFile() {
+  let cookie:string = "";
+  let users:string[] = [];
   if (!fs.existsSync(credentialJsonPath)) {
-    console.error(`the config json file ${credentialJsonPath} doesn't exist`)
-    process.exit(1);
+    console.log(`the config json file ${credentialJsonPath} doesn't exist`)
+    return  { cookie, users };
   }
   const rawData: string = fs
     .readFileSync(credentialJsonPath)
     .toString("utf-8");
   const parsedConfigs: ParsedConfigs = JSON.parse(rawData);
-  let { cookie, users } = parsedConfigs;
+  cookie = parsedConfigs.cookie;
+  users = parsedConfigs.users;
   if (typeof cookie !== "string") {
-    console.error(`the cookie doesn't exist or is not string in ${credentialJsonPath}`)
-    process.exit(1);
+    console.log(`the cookie doesn't exist or is not string in ${credentialJsonPath}`)
   }
   if (!_.isUndefined(users) && !_.isArray(users)) {
-    console.error(`the users in ${credentialJsonPath} should be empty or an array of string`)
-    process.exit(1);
+    console.log(`the users in ${credentialJsonPath} should be empty or an array of string`)
   }
   if (_.isUndefined(users)) {
     users = [];

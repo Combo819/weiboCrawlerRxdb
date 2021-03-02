@@ -59,16 +59,14 @@ function WeiboList(Props: React.Props<any>) {
           {weibos.length > 0 ? (
             weibos.map((item: any) => {
               return (
-                <Row className={"mt-3"} key={item.id}>
-                  <Col>
-                    <WeiboCard
-                      isWeiboContent={false}
-                      page={page}
-                      pageSize={pageSize}
-                      weibo={item}
-                    ></WeiboCard>
-                  </Col>
-                </Row>
+                <div className={"mt-3"} key={item.id}>
+                  <WeiboCard
+                    isWeiboContent={false}
+                    page={page}
+                    pageSize={pageSize}
+                    weibo={item}
+                  ></WeiboCard>
+                </div>
               );
             })
           ) : (
