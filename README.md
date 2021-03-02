@@ -4,7 +4,7 @@
 ![2021-02-26 22.38.14-1](https://raw.githubusercontent.com/kang-ut/picbed/master/img/2021-02-26%2022.38.14-1.gif)
 ## 使用
 ### 下载
-[pre-release-0.96](https://github.com/Combo819/weiboCrawlerRxdb/releases/tag/0.96)下载对应系统版本，下载后解压
+[pre-release-0.9.6](https://github.com/Combo819/weiboCrawlerRxdb/releases/tag/0.9.6)下载对应系统版本，下载后解压
 ### 账号 
 准备两个微博账号，一个是日常使用的账号（大号），另一个用来爬虫（小号）。每次大号给小号私信分享一条微博，该微博就会被备份下来。  
 没有小号的请下拉查看[免cookie模式](#免cookie模式)
