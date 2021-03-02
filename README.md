@@ -1,9 +1,10 @@
 ## A typescript weiboo crawler
 本项目可以每次备份单条微博，包括微博的图片，文字，视频，评论，评论的回复，转发，并能完整地复现。数据都下载到了本地，你可以把它当成一个不会被和谐的微博收藏夹。  
+你可以直接在程序的网页内粘贴微博的url/id备份，也可以通过私信分享微博备份。  
 ![2021-02-26 22.38.14-1](https://raw.githubusercontent.com/kang-ut/picbed/master/img/2021-02-26%2022.38.14-1.gif)
 ## 使用
 ### 下载
-[pre-release-0.9](https://github.com/Combo819/weiboCrawlerRxdb/releases/tag/0.9)下载对应系统版本，下载后解压
+[pre-release-0.96](https://github.com/Combo819/weiboCrawlerRxdb/releases/tag/0.96)下载对应系统版本，下载后解压
 ### 账号 
 准备两个微博账号，一个是日常使用的账号（大号），另一个用来爬虫（小号）。每次大号给小号私信分享一条微博，该微博就会被备份下来。  
 没有小号的请下拉查看[免cookie模式](#免cookie模式)
@@ -36,6 +37,8 @@
 + 程序启动后会自动打开浏览器。如果没有自动打开，则手动打开浏览器并进入`http://localhost:5000`（默认5000，以powershell显示为准）
 ![20210224232938](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210224232938.png)
 ![20200926160706](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20200926160706.png)
++ 第一次运行会弹出防火墙提示，如果你想要局域网访问，选中专有网络然后点击允许访问。  
+![20210301223135](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301223135.png)
 + 点击左上角的save按钮，在弹出的输入框中输入微博的url或者ID。如果你配置了cookie，在程序启动两分钟后私信分享一条微博给小号。微博保存成功后要刷新页面。
 </details>
 

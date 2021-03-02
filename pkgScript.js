@@ -52,8 +52,8 @@ async function pkgScript() {
         }
         const namePrefix = "weiboCrawlerTs-";
         try {
-            await execa.command('cp -r ./dist/linux ./dist/win');
-            await execa.command('cp -r ./dist/linux ./dist/macos');
+            await fs.copy('./dist/linux','./dist/win');
+            await fs.copy('./dist/linux','./dist/macos');
             await fs.move(path.join("./dist", namePrefix + 'win.exe'), path.join("./dist", 'win', namePrefix + 'win.exe'))
             await fs.move(path.join("./dist", namePrefix + 'macos'), path.join("./dist", 'macos', namePrefix + 'macos'))
             await fs.move(path.join("./dist", namePrefix + 'linux'), path.join("./dist", 'linux', namePrefix + 'linux'))
