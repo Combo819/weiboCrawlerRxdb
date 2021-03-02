@@ -6,7 +6,7 @@ import {
 } from '../utility/parseWeiboId'
 class Listener {
   private listeners: string[];
-  private messageId: any;
+  private messageId: { [key: string]: string[] };
   constructor(users: string[]) {
     this.listeners = users;
     this.messageId = {}; // {userId1:messageIdString[]}
@@ -18,7 +18,7 @@ class Listener {
   private traverseListeners(): void {
     this.listeners.forEach((userId: string) => {
       // if the this.messageId[userId] string[] is not created, push all messageId to it and do nothing.
-      console.log("listeners[]", "messages IDs of each listener", this.listeners, this.messageId);
+      console.log("listening messages from these users: ", this.listeners);
       if (!this.messageId[userId]) {
         this.messageId[userId] = [];
         getMessage({ count: 10, uid: userId }).then((res) => {

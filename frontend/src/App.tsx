@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { Layout, Menu, Button, Dropdown, BackTop } from "antd";
+import { Layout, Menu, Button, Dropdown, BackTop, Empty } from "antd";
 import { Switch, Route } from "react-router-dom";
 import { routes } from "./Routes";
 import { SaveWeiboModal } from "./Component/Modal";
@@ -17,7 +17,7 @@ function App(): JSX.Element {
       setUsers(users);
     });
   }, []);
-  const menu = (
+  const menu = users?.length ? (
     <Menu>
       {users.map((item) => (
         <Menu.Item>
@@ -31,6 +31,8 @@ function App(): JSX.Element {
         </Menu.Item>
       ))}
     </Menu>
+  ) : (
+    <Empty />
   );
 
   return (
@@ -82,7 +84,9 @@ function App(): JSX.Element {
         }}
       ></SaveWeiboModal>
       <BackTop>
-        <UpCircleOutlined style={{ fontSize: 30,color:"rgba(0, 0, 0, 0.45)" }}  />
+        <UpCircleOutlined
+          style={{ fontSize: 30, color: "rgba(0, 0, 0, 0.45)" }}
+        />
       </BackTop>
     </Layout>
   );

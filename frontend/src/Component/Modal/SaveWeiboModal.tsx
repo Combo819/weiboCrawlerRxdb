@@ -32,6 +32,8 @@ export default function SaveWeiboModal(props: SaveWeiboModalProps) {
               response?.data?.message ||
                 `weibo "${value.weiboIdUrl}" doesn't exist or the token has expired`
             );
+          }else{
+            message.success(`Weibo ${value.weiboIdUrl} backup processing`)
           }
         } catch (err) {
           message.error("Error Network: Failed to save the weibo");
