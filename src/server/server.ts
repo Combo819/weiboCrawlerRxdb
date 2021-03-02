@@ -28,7 +28,7 @@ function startServer(usernames: string[]): void {
 
   const app: Application = express();
 
-  app.use(express.urlencoded());
+  app.use(express.urlencoded({extended:true}));
   app.use(express.json());
 
 

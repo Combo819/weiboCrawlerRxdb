@@ -4,6 +4,7 @@ async function pkgScript() {
     const fs = require('fs-extra');
     const path = require('path');
     try {
+        await fs.remove('./dist');
         process.chdir("frontend")
         const isNodeModules = await fs.pathExists('node_modules');
         if (!isNodeModules) {
