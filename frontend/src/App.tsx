@@ -17,23 +17,28 @@ function App(): JSX.Element {
       setUsers(users);
     });
   }, []);
-  const menu = users?.length ? (
-    <Menu>
-      {users.map((item) => (
-        <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`https://weibo.com/n/${item}`}
-          >
-            @{item}
-          </a>
+  const menu =
+    users?.length > 0 ? (
+      <Menu>
+        {users.map((item) => (
+          <Menu.Item>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://weibo.com/n/${item}`}
+            >
+              @{item}
+            </a>
+          </Menu.Item>
+        ))}
+      </Menu>
+    ) : (
+      <Menu>
+        <Menu.Item disabled>
+          <div>No User</div>
         </Menu.Item>
-      ))}
-    </Menu>
-  ) : (
-    <Empty />
-  );
+      </Menu>
+    );
 
   return (
     <Layout>
