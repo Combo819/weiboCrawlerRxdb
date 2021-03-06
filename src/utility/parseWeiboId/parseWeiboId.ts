@@ -3,6 +3,7 @@ import isUrl from "is-url";
 import cheerio from 'cheerio';
 import { URL } from "url";
 import _ from "lodash";
+import { url } from 'inspector';
 
 /**
  * retrieve url from message
@@ -26,7 +27,7 @@ export async function parseUrl(msgText: string): Promise<string> {
  */
 export async function parseWeiboId(urlStr: string) {
   //if the string contains only digits
-  if(/^[0-9]*$/.test(urlStr)){
+  if (/^[0-9]*$/.test(urlStr)) {
     return urlStr;
   }
   let urlObj = new URL(urlStr);
@@ -41,6 +42,8 @@ export async function parseWeiboId(urlStr: string) {
       console.log(err);
       return '';
     }
+  } else if (urlObj.hostname === "share.api.weibo.cn") {
+    return urlObj.searchParams.get("weibo_id") || '';
   } else {
     const weiboId = _.last(_.trimEnd(urlObj.pathname, "/").split("/"));
     return weiboId || "";
