@@ -300,7 +300,7 @@ function startServer(usernames: string[]): void {
 
 
 
-  app.use("/", express.static(path.resolve(__dirname, "../../", "frontend", "build")));
+  app.use("*", express.static(path.resolve(__dirname, "../../", "frontend", "build")));
 
   getPort({ port: [port, port + 1, port + 2] }).then((res: number) => {
     const availblePort: number = res;
