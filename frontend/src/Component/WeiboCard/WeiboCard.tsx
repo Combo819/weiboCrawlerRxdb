@@ -167,6 +167,8 @@ export default function WeiboCard(props: CardProps) {
           pageSize= {pageSize}
           loading={loading || false}
           repostedWeibo={weibo?.reposting as Weibo}
+          dispatchRouteStates={dispatchRouteStates}
+          isWeiboList={isWeiboList}
         />
       )}
       {weibo && weibo.pics && (

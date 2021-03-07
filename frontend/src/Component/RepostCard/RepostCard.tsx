@@ -17,6 +17,8 @@ type RepostCardProps = {
   loading: boolean;
   page?: string | null;
   pageSize?: string | null;
+  dispatchRouteStates: () => void;
+  isWeiboList: boolean;
 };
 
 function RepostCard({
@@ -24,6 +26,8 @@ function RepostCard({
   loading,
   page,
   pageSize,
+  dispatchRouteStates,
+  isWeiboList,
 }: RepostCardProps) {
   const chunkImages: any[][] = _.chunk(weibo?.pics, 3);
   const history = useHistory();
@@ -32,7 +36,9 @@ function RepostCard({
       actions={[
         <div
           onClick={() => {
-            //history.push(`/comments/${weibo.id}?page=1&pageSize=10`,'hello')
+            if(isWeiboList){
+              dispatchRouteStates();
+            }
             history.push({
               pathname: `/weibo/${weibo.id}/reposts`,
               search: `?page=1&pageSize=10`,
@@ -48,9 +54,11 @@ function RepostCard({
         </div>,
         <div
           onClick={() => {
-            //history.push(`/comments/${weibo.id}?page=1&pageSize=10`,'hello')
+            if(isWeiboList){
+              dispatchRouteStates();
+            }
             history.push({
-              pathname: `/comments/${weibo.id}`,
+              pathname: `/weibo/${weibo.id}/comments`,
               search: `?page=1&pageSize=10`,
             });
           }}
