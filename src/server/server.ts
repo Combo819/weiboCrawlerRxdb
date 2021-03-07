@@ -299,8 +299,10 @@ function startServer(usernames: string[]): void {
   });
 
 
-
-  app.use("*", express.static(path.resolve(__dirname, "../../", "frontend", "build")));
+  app.use(express.static(path.resolve(__dirname, "../../", "frontend", "build")));
+  app.use("*", (request: Request,response: Response)=>{
+    response.sendFile(path.resolve(__dirname,"../../", "frontend", "build","index.html"))
+  });
 
   getPort({ port: [port, port + 1, port + 2] }).then((res: number) => {
     const availblePort: number = res;
