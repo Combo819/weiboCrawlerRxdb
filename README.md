@@ -1,6 +1,7 @@
 ## A typescript weiboo crawler
 一个微博备份工具。本项目可以每次备份单条微博，包括微博的图片，文字，视频，评论，评论的回复，转发，并能完整地复现。数据都下载到了本地，你可以把它当成一个不会被和谐的微博收藏夹。  
 你可以直接在程序的网页内粘贴微博的url/id备份，也可以通过私信分享微博备份。  
+![desktop](https://raw.githubusercontent.com/kang-ut/picbed/master/img/desktop.gif)
 ![2021-02-26 22.38.14-1](https://raw.githubusercontent.com/kang-ut/picbed/master/img/2021-02-26%2022.38.14-1.gif)
 ## 使用
 ### 下载
