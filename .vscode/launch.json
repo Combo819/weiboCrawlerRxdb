@@ -10,7 +10,7 @@
       "request": "attach",
       "type": "pwa-chrome",
       "webRoot": "${workspaceFolder}/frontend",
-      "url":"http://localhost:3000"
+      "url":"http://localhost:3000/*"
     },
     {
       "name": "Current Project",

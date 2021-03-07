@@ -19,28 +19,32 @@ import { Weibo } from "../../types";
 import RepostCard from "../RepostCard/RepostCard";
 import styles from "./index.module.css";
 import { deleteWeiboApi } from "../../Api";
+import {useDispatch} from 'react-redux';
+import {updateRouteStateCreator} from '../../Store'
 
 type CardProps = {
   weibo: Weibo;
-  isWeiboContent: boolean;
   page?: string | null;
   pageSize?: string | null;
   loading?: boolean;
+  isWeiboList:boolean;
 };
 const { confirm } = Modal;
 export default function WeiboCard(props: CardProps) {
-  const { weibo, loading, page, pageSize, isWeiboContent } = props;
+  const dispatch = useDispatch();
+  const { weibo, loading, page, pageSize,isWeiboList } = props;
   const chunkImages: any[][] = _.chunk(weibo?.pics, 3);
   const history = useHistory();
 
   const actionItems = [
     <div
       onClick={() => {
-        //history.push(`/comments/${weibo.id}?page=1&pageSize=10`,'hello')
+        if(isWeiboList){
+          dispatchRouteStates();
+        }
         history.push({
           pathname: `/weibo/${weibo.id}/reposts`,
           search: `?page=1&pageSize=10`,
-          state: { page, pageSize },
         });
       }}
     >
@@ -65,11 +69,12 @@ export default function WeiboCard(props: CardProps) {
     </div>,
     <div
       onClick={() => {
-        //history.push(`/comments/${weibo.id}?page=1&pageSize=10`,'hello')
+        if(isWeiboList){
+          dispatchRouteStates();
+        }
         history.push({
           pathname: `/weibo/${weibo.id}/comments`,
           search: `?page=1&pageSize=10`,
-          state: { page, pageSize },
         });
       }}
     >
@@ -209,4 +214,10 @@ export default function WeiboCard(props: CardProps) {
       )}
     </Card>
   );
+
+  function dispatchRouteStates() {
+    dispatch(updateRouteStateCreator('weiboList', 'id', weibo.id));
+    dispatch(updateRouteStateCreator('weiboList', 'page', page || 1));
+    dispatch(updateRouteStateCreator('weiboList', 'pageSize', pageSize || 10));
+  }
 }

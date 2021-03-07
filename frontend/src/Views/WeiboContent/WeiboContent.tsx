@@ -5,21 +5,20 @@ import { useParams, useLocation, useHistory } from "react-router-dom";
 import { getSingleWeiboApi } from "../../Api";
 import { CommentList } from "../../Component/CommentList";
 import { Weibo } from "../../types";
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route } from "react-router-dom";
 import { RepostCommentList } from "../../Component/RepostCommentList";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Store";
 function WeiboContent(props: React.Props<any>) {
+  const { weiboList } = useSelector((state: RootState) => state.routeState);
   function useQuery() {
     return new URLSearchParams(useLocation().search);
-  }
-  function usePushState() {
-    return useLocation().state || { page: 1, pageSize: 10 };
   }
   const history = useHistory();
   const { weiboId } = useParams<{ weiboId: string }>();
   const query = useQuery();
   const [weibo, setWeibo] = useState<Weibo>({ comments: [] } as any);
   const [loading, setLoading] = useState(false);
-  const { page: backPage, pageSize: backPageSize } = usePushState() as any;
 
   useEffect(() => {
     setLoading(true);
@@ -33,7 +32,7 @@ function WeiboContent(props: React.Props<any>) {
         setWeibo(weibo);
         setLoading(false);
       })
-      .catch((err) => { });
+      .catch((err) => {});
   }, [weiboId]);
 
   return (
@@ -45,7 +44,7 @@ function WeiboContent(props: React.Props<any>) {
             onBack={() => {
               history.push({
                 pathname: `/`,
-                search: `?page=${backPage||1}&pageSize=${backPageSize||10}`,
+                search: `?page=${weiboList.page}&pageSize=${weiboList.pageSize}`,
               });
             }}
             title="Back"
@@ -56,7 +55,7 @@ function WeiboContent(props: React.Props<any>) {
       <Row justify="center">
         <Col style={{ width: 600 }}>
           <WeiboCard
-            isWeiboContent={true}
+            isWeiboList={false}
             loading={loading}
             weibo={weibo}
           ></WeiboCard>
@@ -70,7 +69,6 @@ function WeiboContent(props: React.Props<any>) {
           <RepostCommentList />
         </Route>
       </Switch>
-
     </>
   );
 }

@@ -4,12 +4,15 @@ import { WeiboCard } from "../../Component/WeiboCard";
 import { getWeibosApi } from "../../Api";
 import { useLocation, useHistory } from "react-router-dom";
 import { Weibo as WeiboType } from "../../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Store";
 
 function WeiboList(Props: React.Props<any>) {
   let listRef = useRef<any>(null);
   function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
+  const { weiboList } = useSelector((state: RootState) => state.routeState);
   const history = useHistory();
   const query = useQuery();
   const [weibos, setWeibos] = useState<WeiboType[]>([]);
@@ -28,6 +31,15 @@ function WeiboList(Props: React.Props<any>) {
         console.log(err);
       });
   }, [page, pageSize]);
+
+  useEffect(() => {
+    if (weiboList.id && weibos.length) {
+      setTimeout(() => {
+        const dom = document.getElementById(weiboList.id);
+        dom && dom.scrollIntoView();
+      }, 0);
+    }
+  }, [weiboList.id, weibos.length]);
 
   const onShowSizeChange = (currentPage: number, pageSize: number) => {
     const newPage = currentPage <= 0 ? 1 : currentPage;
@@ -59,9 +71,9 @@ function WeiboList(Props: React.Props<any>) {
           {weibos.length > 0 ? (
             weibos.map((item: any) => {
               return (
-                <div className={"mt-3"} key={item.id}>
+                <div id={item.id} className={"mt-3"} key={item.id}>
                   <WeiboCard
-                    isWeiboContent={false}
+                    isWeiboList={true}
                     page={page}
                     pageSize={pageSize}
                     weibo={item}

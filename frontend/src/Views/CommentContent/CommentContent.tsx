@@ -6,13 +6,13 @@ import { getSingleCommentApi } from "../../Api";
 import {SubCommentList} from '../../Component/SubCommentList'
 import HtmlParser from "react-html-parser";
 import { getImageUrl } from "../../Utility/parseUrl";
+import {useSelector} from 'react-redux';
+import {RootState} from '../../Store'
 function CommentContent(props: React.Props<any>) {
   function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
-  function usePushState() {
-    return useLocation().state || { page: 1, pageSize: 10 };
-  }
+  const {weiboContent} = useSelector((state:RootState)=>state.routeState)
   const history = useHistory();
   const { commentId } = useParams<{commentId:string}>();
   const query = useQuery();
@@ -23,7 +23,6 @@ function CommentContent(props: React.Props<any>) {
     weiboId:''
   });
   const [loading, setLoading] = useState(false);
-  const { page: backPage, pageSize: backPageSize } = usePushState() as any;
 
   useEffect(() => {
     setLoading(true);
@@ -49,7 +48,7 @@ function CommentContent(props: React.Props<any>) {
             onBack={() => {
               history.push({
                 pathname: `/weibo/${comment.weiboId}/comments`,
-                search: `?page=${backPage}&pageSize=${backPageSize}`,
+                search: `?page=${weiboContent.page}&pageSize=${weiboContent.pageSize}`,
               });
             }}
             title="Back"

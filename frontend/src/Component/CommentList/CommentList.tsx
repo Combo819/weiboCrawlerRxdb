@@ -8,7 +8,12 @@ import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import "react-photo-view/dist/index.css";
 import { getImageUrl } from "../../Utility/parseUrl";
 import { Comment } from "../../types";
+import {useDispatch,useSelector} from 'react-redux'
+import { updateRouteStateCreator,RootState } from "../../Store";
+
+
 export default function CommentList(props: React.Props<any>) {
+  const dispatch = useDispatch()
   function useQuery() {
     const query = new URLSearchParams(useLocation().search);
     return { page: query.get("page"), pageSize: query.get("pageSize") };
@@ -23,7 +28,7 @@ export default function CommentList(props: React.Props<any>) {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(urlPage);
   const [pageSize, setPageSize] = useState(urlPageSize);
-
+  const {weiboContent} = useSelector((state:RootState)=>state.routeState)
   useEffect(() => {
     setLoading(true);
     getCommentsApi(weiboId, parseInt(page || "1"), parseInt(pageSize || "10"))
@@ -35,6 +40,16 @@ export default function CommentList(props: React.Props<any>) {
       })
       .catch((err) => {});
   }, [weiboId, page, pageSize]);
+
+  useEffect(()=>{
+    if (weiboContent.id && comments.length) {
+      setTimeout(() => {
+        const dom = document.getElementById(weiboContent.id);
+        dom && dom.scrollIntoView();
+      }, 0);
+    }
+  },[comments.length,weiboContent.id]);
+
   const onShowSizeChange = (currentPage: number, pageSize: number) => {
     const newPage = currentPage <= 0 ? 1 : currentPage;
     setPage(String(newPage));
@@ -57,11 +72,15 @@ export default function CommentList(props: React.Props<any>) {
       listRef.current.scrollIntoView();
     }
   };
+
+
+  
+
   const toSubComments = (commentId: string) => {
+    dispatchRouteStates(commentId);
     history.push({
       pathname: `/comment/${commentId}`,
       search: `?page=1&pageSize=10`,
-      state: { page, pageSize },
     });
   };
 
@@ -84,6 +103,7 @@ export default function CommentList(props: React.Props<any>) {
             dataSource={comments || []}
             renderItem={(item: any) => (
               <List.Item
+              id={item && item.id}
                 actions={[
                   <>
                     <span style={{ position: "relative", top: 5 }}>
@@ -154,4 +174,10 @@ export default function CommentList(props: React.Props<any>) {
       </Row>
     </>
   );
+
+  function dispatchRouteStates(commentId:string) {
+    dispatch(updateRouteStateCreator('weiboContent', 'id', commentId));
+    dispatch(updateRouteStateCreator('weiboContent', 'page', page || 1));
+    dispatch(updateRouteStateCreator('weiboContent', 'pageSize', pageSize || 10));
+  }
 }
