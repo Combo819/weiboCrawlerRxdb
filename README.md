@@ -18,10 +18,10 @@
 }
 ```
 其中`cookie`是小号的cookie，获取cookie的方法请参照[cookie.md](https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md)
-`users`是要监听私信的用户名（大号）。只能是用户名而不能是手机或者邮箱。 比如你的微博大号是`@van`， 则`"users":["van"]`。你可以同时监听多个微博账号。
+`users`是要监听私信的用户名（大号）。只能是用户名而不能是手机或者邮箱。 比如你的微博大号是`@van`， 则`"users":["van"]`。你可以同时监听多个微博账号。`users`里面的账号（大号）给小号私信一条微博，这条微博就能备份下来。
 
 ### 免cookie模式
-如果你没有配置`credential.json`文件，或者文件里的`cookie`项留空了，在下一步程序启动时会询问你是否要以免cookie模式启动。到时请按`y`+回车启动程序，或者按任意键结束程序。  
+如果你跳过了上一步“创建配置文件”，则程序启动时会询问你是否以免cookie模式启动。按`y`+回车启动程序，或者按任意键结束程序。  
 ![20210301173435](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301173435.png)  
 免cookie模式下，你将：
 + 每条微博最多备份200条评论，每条评论最多备份10条回复
@@ -85,12 +85,13 @@ Github上已经有很多微博的爬虫仓库了。区别于其他爬虫，本�
 + 请勿在无保护下开放公网访问
 
 ### 局域网访问
-
+程序运行之后，你可以在本机打开程序的网页来备份新微博，或者查看备份好的微博。  
+如果你想在家躺在沙发上用手机来备份和查看，配置好局域网访问即可。
 <details><summary>macos</summary>
 
 + 查找局域网下本机的ip地址。点wifi图标-> 网络偏好设置。图中的`192.168.2.18`就是本机在局域网中的ip地址
 ![ip](https://raw.githubusercontent.com/kang-ut/picbed/master/img/ip.png)
-+ 在局域网的其他设备下打开浏览器，尝试访问`http://${ip4}:5000`。其中`${ip}`替换为你查到的ip4地址。比如上图中是`http://192.168.2.20:5000`。如果网页加载成功，则大功告成。否则下一步
++ 在局域网的其他设备下打开浏览器，尝试访问`http://${ip4}:5000`。其中`${ip}`替换为你查到的ip4地址。比如上图中是`http://192.168.2.20:5000`。如果网页加载成功，则大功告成。否则下一步检查防火墙配置
 + 点击系统偏好设置->安全性与隐私
 ![setting](https://raw.githubusercontent.com/kang-ut/picbed/master/img/setting.png)
 + 点击防火墙，点左下角解锁，点击防火墙选项
@@ -105,7 +106,7 @@ Github上已经有很多微博的爬虫仓库了。区别于其他爬虫，本�
 + 查找局域网下本机的ip地址。点击wifi图标->属性 找到ip4地址
 ![20210301152945](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301152945.png)
 ![20210301153212](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301153212.png)
-+ 在局域网的其他设备下打开浏览器，尝试访问`http://${ip4}:5000`。其中`${ip}`替换为你查到的ip4地址。比如上图中是`http://192.168.2.20:5000`。如果网页加载成功，则大功告成。否则下一步
++ 在局域网的其他设备下打开浏览器，尝试访问`http://${ip4}:5000`。其中`${ip}`替换为你查到的ip4地址。比如上图中是`http://192.168.2.20:5000`。如果网页加载成功，则大功告成。否则下一步检查防火墙配置
 + 打开程序所在的电脑的防火墙。按win键，搜索“防火墙”，点击`高级安全 windows defender防火墙`
 ![20210301153857](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301153857.png)
 + 点击`入站规则`,找到`weiboCrawlerts-win.exe`, 点击`属性`
@@ -114,7 +115,11 @@ Github上已经有很多微博的爬虫仓库了。区别于其他爬虫，本�
 ![20210301154302](https://raw.githubusercontent.com/kang-ut/picbed/master/img/20210301154302.png)
 </details>
 <details><summary>Linux</summary>
-请参照macos或windows的教程自行摸索
+请参照macos或windows的教程自行摸索。大体思路：
+
++ 找到本机在局域网的ip
++ 尝试访问
++ 访问不成功则检查防火墙配置
 </details>
 
 ## 开发
